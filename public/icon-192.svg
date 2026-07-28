@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C4DFF"/>
+      <stop offset="100%" stop-color="#E040FB"/>
+    </linearGradient>
+  </defs>
+  <rect width="192" height="192" rx="40" fill="url(#bg)"/>
+  <!-- Musical note -->
+  <g fill="white">
+    <ellipse cx="78" cy="128" rx="22" ry="16" transform="rotate(-15,78,128)"/>
+    <rect x="97" y="48" width="10" height="84"/>
+    <path d="M107 48 Q150 62 135 98 Q122 80 107 82 Z"/>
+  </g>
+  <!-- Sound waves -->
+  <path d="M120 90 Q140 104 120 118" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" opacity="0.75"/>
+  <path d="M128 75 Q158 104 128 133" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" opacity="0.45"/>
+</svg>
