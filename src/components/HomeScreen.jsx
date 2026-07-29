@@ -23,8 +23,11 @@ function starStr(n) {
   return '⭐'.repeat(n) + '☆'.repeat(3 - n)
 }
 
-export default function HomeScreen({ months, kid, speech, onStartQuiz, onSwitchKid, onMenu }) {
-  const totalStars = Object.values(kid.progress).reduce((s, p) => s + p.stars, 0)
+export default function HomeScreen({ months, kid, speech, onStartQuiz, onSwitchKid, onMenu, mode = 'pronounce' }) {
+  const progress = (mode === 'spelling' ? kid.spellingProgress : kid.progress) || {}
+  const totalStars = Object.values(progress).reduce((s, p) => s + p.stars, 0)
+  const heading = mode === 'spelling' ? '🔤 Choose a Section to Spell' : '🗺️ Choose a Section'
+  const subheading = mode === 'spelling' ? 'Tap a section to start spelling!' : 'Tap a section to start the quiz!'
 
   return (
     <Box>
@@ -73,16 +76,16 @@ export default function HomeScreen({ months, kid, speech, onStartQuiz, onSwitchK
 
       <Box px={2} py={3}>
         <Typography variant="h5" textAlign="center" mb={0.5}>
-          🗺️ Choose a Month
+          {heading}
         </Typography>
         <Typography variant="body2" color="text.secondary" textAlign="center" mb={3}>
-          Tap a month to start the quiz!
+          {subheading}
         </Typography>
 
         <Grid container spacing={2}>
           {months.map(month => {
-            const progress = kid.progress[month.num]
-            const stars = progress?.stars || 0
+            const monthProgress = progress[month.num]
+            const stars = monthProgress?.stars || 0
             const chipStyle = STAGE_CHIP[month.stage] || STAGE_CHIP['Expert']
 
             return (
@@ -120,7 +123,7 @@ export default function HomeScreen({ months, kid, speech, onStartQuiz, onSwitchK
                         mt={0.5}
                         sx={{ textShadow: '1px 1px 3px rgba(0,0,0,0.35)' }}
                       >
-                        Month {month.num}
+                        Section {month.num}
                       </Typography>
                     </Box>
 
@@ -143,9 +146,9 @@ export default function HomeScreen({ months, kid, speech, onStartQuiz, onSwitchK
                       <Typography fontSize="0.95rem" mt={0.5}>
                         {starStr(stars)}
                       </Typography>
-                      {progress?.attempts > 0 && (
+                      {monthProgress?.attempts > 0 && (
                         <Typography variant="caption" color="text.secondary">
-                          Best: {progress.bestScore}/10
+                          Best: {monthProgress.bestScore}/10
                         </Typography>
                       )}
                     </CardContent>

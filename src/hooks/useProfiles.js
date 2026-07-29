@@ -29,7 +29,7 @@ export default function useProfiles() {
     const id = Date.now().toString()
     update(prev => ({
       ...prev,
-      kids: [...prev.kids, { id, name, avatar, progress: {} }],
+      kids: [...prev.kids, { id, name, avatar, progress: {}, spellingProgress: {} }],
       activeId: id,
     }))
     return id
@@ -68,7 +68,28 @@ export default function useProfiles() {
     }))
   }, [update])
 
+  const saveSpellingProgress = useCallback((kidId, monthNum, stars, score) => {
+    update(prev => ({
+      ...prev,
+      kids: prev.kids.map(k => {
+        if (k.id !== kidId) return k
+        const existing = (k.spellingProgress || {})[monthNum] || { stars: 0, bestScore: 0, attempts: 0 }
+        return {
+          ...k,
+          spellingProgress: {
+            ...(k.spellingProgress || {}),
+            [monthNum]: {
+              stars: Math.max(existing.stars, stars),
+              bestScore: Math.max(existing.bestScore, score),
+              attempts: existing.attempts + 1,
+            },
+          },
+        }
+      }),
+    }))
+  }, [update])
+
   const activeKid = data.kids.find(k => k.id === data.activeId) ?? null
 
-  return { kids: data.kids, activeKid, addKid, setActiveKid, removeKid, saveProgress }
+  return { kids: data.kids, activeKid, addKid, setActiveKid, removeKid, saveProgress, saveSpellingProgress }
 }

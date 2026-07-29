@@ -28,13 +28,13 @@ const MENU_ITEMS = [
   },
   {
     id: 'spelling',
-    title: 'Spell It!',
+    title: 'Learn Spellings',
     subtitle: 'Spelling Practice',
-    description: 'Hear a word and spell it out — coming soon!',
+    description: '300 words · 10 levels · Build the spelling, letter by letter',
     icon: '🔤',
     color: '#00897B',
     gradient: 'linear-gradient(135deg, #00897B 0%, #69DB7C 100%)',
-    available: false,
+    available: true,
   },
   {
     id: 'stories',

@@ -84,7 +84,7 @@ export default function KidSelector({ profiles, onSelect, onBack }) {
                     <Typography fontSize="3rem" lineHeight={1}>{kid.avatar}</Typography>
                     <Typography variant="h6" mt={0.8} noWrap>{kid.name}</Typography>
                     <Typography variant="caption" color="text.secondary" display="block" mb={0.5}>
-                      {totalStars(kid)} ⭐ · {Object.keys(kid.progress).length}/10 months
+                      {totalStars(kid)} ⭐ · {Object.keys(kid.progress).length}/10 sections
                     </Typography>
                     <Box display="flex" justifyContent="space-between" alignItems="center">
                       <Button

@@ -2,7 +2,7 @@
   "months": [
     {
       "num": 1,
-      "title": "Month 1",
+      "title": "Section 1",
       "theme": "Animals & Family",
       "stage": "Beginner",
       "color": "#FF6B6B",
@@ -42,7 +42,7 @@
     },
     {
       "num": 2,
-      "title": "Month 2",
+      "title": "Section 2",
       "theme": "Food & Colors",
       "stage": "Beginner+",
       "color": "#FFA94D",
@@ -82,7 +82,7 @@
     },
     {
       "num": 3,
-      "title": "Month 3",
+      "title": "Section 3",
       "theme": "Nature & Outdoors",
       "stage": "Easy",
       "color": "#69DB7C",
@@ -122,7 +122,7 @@
     },
     {
       "num": 4,
-      "title": "Month 4",
+      "title": "Section 4",
       "theme": "Toys & Games",
       "stage": "Easy+",
       "color": "#4DABF7",
@@ -162,7 +162,7 @@
     },
     {
       "num": 5,
-      "title": "Month 5",
+      "title": "Section 5",
       "theme": "Weather & Seasons",
       "stage": "Medium",
       "color": "#74C0FC",
@@ -202,7 +202,7 @@
     },
     {
       "num": 6,
-      "title": "Month 6",
+      "title": "Section 6",
       "theme": "School & People",
       "stage": "Medium",
       "color": "#E599F7",
@@ -242,7 +242,7 @@
     },
     {
       "num": 7,
-      "title": "Month 7",
+      "title": "Section 7",
       "theme": "Feelings & Fun",
       "stage": "Medium+",
       "color": "#FF8CC8",
@@ -282,7 +282,7 @@
     },
     {
       "num": 8,
-      "title": "Month 8",
+      "title": "Section 8",
       "theme": "Around the House",
       "stage": "Hard",
       "color": "#A9E34B",
@@ -322,7 +322,7 @@
     },
     {
       "num": 9,
-      "title": "Month 9",
+      "title": "Section 9",
       "theme": "School & Learning",
       "stage": "Hard+",
       "color": "#FF922B",
@@ -362,7 +362,7 @@
     },
     {
       "num": 10,
-      "title": "Month 10",
+      "title": "Section 10",
       "theme": "Big Kid Words!",
       "stage": "Expert",
       "color": "#F03E3E",

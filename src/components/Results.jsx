@@ -151,7 +151,7 @@ export default function Results({ result, month, speech, onRetry, onHome }) {
               size="large"
               sx={{ py: 1.8, borderWidth: 2 }}
             >
-              All Months
+              All Sections
             </Button>
           </Box>
         </CardContent>

@@ -7,10 +7,12 @@ import MainMenu from './components/MainMenu'
 import KidSelector from './components/KidSelector'
 import HomeScreen from './components/HomeScreen'
 import Quiz from './components/Quiz'
+import SpellingQuiz from './components/SpellingQuiz'
 import Results from './components/Results'
 
 export default function App() {
   const [screen, setScreen] = useState('menu')
+  const [mode, setMode] = useState('pronounce') // 'pronounce' | 'spelling'
   const [words, setWords] = useState(null)
   const [selectedMonth, setSelectedMonth] = useState(null)
   const [lastResult, setLastResult] = useState(null)
@@ -27,7 +29,8 @@ export default function App() {
 
   // When a menu item is selected, route into that section
   const handleMenuSelect = (id) => {
-    if (id === 'sound-trail') {
+    if (id === 'sound-trail' || id === 'spelling') {
+      setMode(id === 'spelling' ? 'spelling' : 'pronounce')
       // Skip kid selector if a kid is already active
       setScreen(profiles.activeKid ? 'home' : 'kids')
     }
@@ -41,7 +44,11 @@ export default function App() {
   }
 
   const handleQuizDone = (result) => {
-    profiles.saveProgress(profiles.activeKid.id, result.monthNum, result.stars, result.score)
+    if (mode === 'spelling') {
+      profiles.saveSpellingProgress(profiles.activeKid.id, result.monthNum, result.stars, result.score)
+    } else {
+      profiles.saveProgress(profiles.activeKid.id, result.monthNum, result.stars, result.score)
+    }
     setLastResult(result)
     setScreen('results')
   }
@@ -80,15 +87,25 @@ export default function App() {
             onStartQuiz={handleStartQuiz}
             onSwitchKid={handleSwitch}
             onMenu={handleMenu}
+            mode={mode}
           />
         )}
         {screen === 'quiz' && selectedMonth && (
-          <Quiz
-            month={selectedMonth}
-            speech={speech}
-            onDone={handleQuizDone}
-            onBack={handleHome}
-          />
+          mode === 'spelling' ? (
+            <SpellingQuiz
+              month={selectedMonth}
+              speech={speech}
+              onDone={handleQuizDone}
+              onBack={handleHome}
+            />
+          ) : (
+            <Quiz
+              month={selectedMonth}
+              speech={speech}
+              onDone={handleQuizDone}
+              onBack={handleHome}
+            />
+          )
         )}
         {screen === 'results' && lastResult && (
           <Results
