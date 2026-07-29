@@ -1,9 +1,10 @@
 import React from 'react'
 import {
   Box, Typography, Grid, Card, CardActionArea, CardContent,
-  Chip, AppBar, Toolbar, Button,
+  Chip, AppBar, Toolbar, Button, IconButton,
 } from '@mui/material'
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
+import AppsIcon from '@mui/icons-material/Apps'
 import AccentPicker from './AccentPicker'
 
 const STAGE_CHIP = {
@@ -22,7 +23,7 @@ function starStr(n) {
   return '⭐'.repeat(n) + '☆'.repeat(3 - n)
 }
 
-export default function HomeScreen({ months, kid, speech, onStartQuiz, onSwitchKid }) {
+export default function HomeScreen({ months, kid, speech, onStartQuiz, onSwitchKid, onMenu }) {
   const totalStars = Object.values(kid.progress).reduce((s, p) => s + p.stars, 0)
 
   return (
@@ -33,6 +34,9 @@ export default function HomeScreen({ months, kid, speech, onStartQuiz, onSwitchK
         sx={{ background: 'linear-gradient(135deg, #7C4DFF 0%, #E040FB 100%)' }}
       >
         <Toolbar sx={{ gap: 1 }}>
+          <IconButton onClick={onMenu} sx={{ color: 'white', mr: 0.5 }} size="small" title="Main Menu">
+            <AppsIcon />
+          </IconButton>
           <Typography fontSize="2rem" lineHeight={1}>{kid.avatar}</Typography>
           <Box flex={1}>
             <Typography variant="h6" color="white" lineHeight={1.2} fontSize="1rem">

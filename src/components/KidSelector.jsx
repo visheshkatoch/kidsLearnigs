@@ -6,6 +6,7 @@ import {
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 const AVATARS = ['🦁', '🐯', '🐼', '🦊', '🐸', '🦋', '🐬', '🦄', '🐲', '⭐']
 
@@ -13,7 +14,7 @@ function totalStars(kid) {
   return Object.values(kid.progress).reduce((s, p) => s + p.stars, 0)
 }
 
-export default function KidSelector({ profiles, onSelect }) {
+export default function KidSelector({ profiles, onSelect, onBack }) {
   const noProfiles = profiles.kids.length === 0
   const [adding, setAdding] = useState(noProfiles)
   const [name, setName] = useState('')
@@ -50,6 +51,13 @@ export default function KidSelector({ profiles, onSelect }) {
       py={4}
       sx={{ background: 'linear-gradient(135deg, #7C4DFF 0%, #E040FB 100%)' }}
     >
+      {/* Back to main menu */}
+      <Box alignSelf="flex-start" mb={1}>
+        <IconButton onClick={onBack} sx={{ color: 'rgba(255,255,255,0.8)' }} size="small">
+          <ArrowBackIcon />
+        </IconButton>
+      </Box>
+
       <Typography variant="h4" color="white" mb={0.5} textAlign="center">
         🎵 Sound Trail
       </Typography>

@@ -3,13 +3,14 @@ import { ThemeProvider, CssBaseline, Box, CircularProgress } from '@mui/material
 import { theme } from './theme'
 import useProfiles from './hooks/useProfiles'
 import useSpeech from './hooks/useSpeech'
+import MainMenu from './components/MainMenu'
 import KidSelector from './components/KidSelector'
 import HomeScreen from './components/HomeScreen'
 import Quiz from './components/Quiz'
 import Results from './components/Results'
 
 export default function App() {
-  const [screen, setScreen] = useState('kids')
+  const [screen, setScreen] = useState('menu')
   const [words, setWords] = useState(null)
   const [selectedMonth, setSelectedMonth] = useState(null)
   const [lastResult, setLastResult] = useState(null)
@@ -24,12 +25,13 @@ export default function App() {
       .catch(console.error)
   }, [])
 
-  // If a kid is already active when app loads, go straight to home
-  useEffect(() => {
-    if (profiles.activeKid && screen === 'kids') {
-      setScreen('home')
+  // When a menu item is selected, route into that section
+  const handleMenuSelect = (id) => {
+    if (id === 'sound-trail') {
+      // Skip kid selector if a kid is already active
+      setScreen(profiles.activeKid ? 'home' : 'kids')
     }
-  }, [profiles.activeKid]) // eslint-disable-line react-hooks/exhaustive-deps
+  }
 
   const handleSelectKid = () => setScreen('home')
 
@@ -46,9 +48,10 @@ export default function App() {
 
   const handleRetry  = () => setScreen('quiz')
   const handleHome   = () => setScreen('home')
+  const handleMenu   = () => setScreen('menu')
   const handleSwitch = () => setScreen('kids')
 
-  if (!words) {
+  if (screen !== 'menu' && !words) {
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
@@ -63,8 +66,11 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box minHeight="100vh" bgcolor="background.default">
+        {screen === 'menu' && (
+          <MainMenu onSelect={handleMenuSelect} />
+        )}
         {screen === 'kids' && (
-          <KidSelector profiles={profiles} onSelect={handleSelectKid} />
+          <KidSelector profiles={profiles} onSelect={handleSelectKid} onBack={handleMenu} />
         )}
         {screen === 'home' && profiles.activeKid && (
           <HomeScreen
@@ -73,6 +79,7 @@ export default function App() {
             speech={speech}
             onStartQuiz={handleStartQuiz}
             onSwitchKid={handleSwitch}
+            onMenu={handleMenu}
           />
         )}
         {screen === 'quiz' && selectedMonth && (
