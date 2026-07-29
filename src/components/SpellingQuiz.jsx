@@ -68,7 +68,7 @@ export default function SpellingQuiz({ month, speech, onDone, onBack }) {
     setStatus(null)
     setFeedback('')
     setMascot(month.mascot)
-    const timer = setTimeout(() => speech.speak(`Spell ${q.word}`), 500)
+    const timer = setTimeout(() => speech.speak(q.word), 500)
     return () => clearTimeout(timer)
   }, [current, q]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -213,7 +213,7 @@ export default function SpellingQuiz({ month, speech, onDone, onBack }) {
             variant="contained"
             size="large"
             startIcon={<VolumeUpIcon />}
-            onClick={() => speech.speak(`Spell ${q.word}`)}
+            onClick={() => speech.speak(q.word)}
             sx={{
               borderRadius: 50,
               px: 3.5,
