@@ -9,11 +9,43 @@ import HomeScreen from './components/HomeScreen'
 import Quiz from './components/Quiz'
 import SpellingQuiz from './components/SpellingQuiz'
 import Results from './components/Results'
+import { hyphenate } from './utils/flags'
+
+// menu item id -> quiz mode
+const MODE_BY_MENU_ID = {
+  'sound-trail': 'pronounce',
+  'spelling': 'spelling',
+  'country-flags': 'flags',
+  'country-spelling': 'countrySpelling',
+}
+
+// quiz mode -> which dataset it draws from, and which quiz component runs it
+const DATASET_BY_MODE = {
+  pronounce: 'words',
+  spelling: 'words',
+  flags: 'countries',
+  countrySpelling: 'countries',
+}
+const SPELLING_MODES = new Set(['spelling', 'countrySpelling'])
+
+function transformCountries(data) {
+  return {
+    months: data.sections.map(s => ({
+      ...s,
+      words: s.countries.map(c => ({
+        word: c.name,
+        phonetic: hyphenate(c.name),
+        code: c.code,
+      })),
+    })),
+  }
+}
 
 export default function App() {
   const [screen, setScreen] = useState('menu')
-  const [mode, setMode] = useState('pronounce') // 'pronounce' | 'spelling'
+  const [mode, setMode] = useState('pronounce')
   const [words, setWords] = useState(null)
+  const [countries, setCountries] = useState(null)
   const [selectedMonth, setSelectedMonth] = useState(null)
   const [lastResult, setLastResult] = useState(null)
 
@@ -25,15 +57,21 @@ export default function App() {
       .then(r => r.json())
       .then(data => setWords(data))
       .catch(console.error)
+    fetch(`${import.meta.env.BASE_URL}countries.json`)
+      .then(r => r.json())
+      .then(data => setCountries(transformCountries(data)))
+      .catch(console.error)
   }, [])
+
+  const dataset = DATASET_BY_MODE[mode] === 'countries' ? countries : words
 
   // When a menu item is selected, route into that section
   const handleMenuSelect = (id) => {
-    if (id === 'sound-trail' || id === 'spelling') {
-      setMode(id === 'spelling' ? 'spelling' : 'pronounce')
-      // Skip kid selector if a kid is already active
-      setScreen(profiles.activeKid ? 'home' : 'kids')
-    }
+    const nextMode = MODE_BY_MENU_ID[id]
+    if (!nextMode) return
+    setMode(nextMode)
+    // Skip kid selector if a kid is already active
+    setScreen(profiles.activeKid ? 'home' : 'kids')
   }
 
   const handleSelectKid = () => setScreen('home')
@@ -44,11 +82,7 @@ export default function App() {
   }
 
   const handleQuizDone = (result) => {
-    if (mode === 'spelling') {
-      profiles.saveSpellingProgress(profiles.activeKid.id, result.monthNum, result.stars, result.score)
-    } else {
-      profiles.saveProgress(profiles.activeKid.id, result.monthNum, result.stars, result.score)
-    }
+    profiles.saveModeProgress(mode, profiles.activeKid.id, result.monthNum, result.stars, result.score)
     setLastResult(result)
     setScreen('results')
   }
@@ -58,7 +92,7 @@ export default function App() {
   const handleMenu   = () => setScreen('menu')
   const handleSwitch = () => setScreen('kids')
 
-  if (screen !== 'menu' && !words) {
+  if (screen !== 'menu' && !dataset) {
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
@@ -79,9 +113,9 @@ export default function App() {
         {screen === 'kids' && (
           <KidSelector profiles={profiles} onSelect={handleSelectKid} onBack={handleMenu} />
         )}
-        {screen === 'home' && profiles.activeKid && (
+        {screen === 'home' && profiles.activeKid && dataset && (
           <HomeScreen
-            months={words.months}
+            months={dataset.months}
             kid={profiles.activeKid}
             speech={speech}
             onStartQuiz={handleStartQuiz}
@@ -91,9 +125,10 @@ export default function App() {
           />
         )}
         {screen === 'quiz' && selectedMonth && (
-          mode === 'spelling' ? (
+          SPELLING_MODES.has(mode) ? (
             <SpellingQuiz
               month={selectedMonth}
+              mode={mode}
               speech={speech}
               onDone={handleQuizDone}
               onBack={handleHome}
@@ -101,6 +136,7 @@ export default function App() {
           ) : (
             <Quiz
               month={selectedMonth}
+              mode={mode}
               speech={speech}
               onDone={handleQuizDone}
               onBack={handleHome}

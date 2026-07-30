@@ -6,9 +6,12 @@ import {
 import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import AccentPicker from './AccentPicker'
+import useStopwatch, { formatTime } from '../hooks/useStopwatch'
+import FlagIcon from './FlagIcon'
 
-const QUIZ_LENGTH = 10
+const WORD_QUIZ_LENGTH = 10
 const MAX_ATTEMPTS = 2
+const AUTO_ADVANCE_MS = 2000
 const HAPPY = ['🥳', '🎉', '⭐', '🌟', '🎊', '🏆', '💪', '👏', '🤩']
 const TRY   = ['😅', '🤔', '💪', '😮', '🙈', '🐣', '😬']
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'.split('')
@@ -26,8 +29,35 @@ function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)]
 }
 
+// Breaks a word into its characters, tagging each as a fillable letter slot
+// (assigned a slotIndex) or a fixed separator (spaces, hyphens, apostrophes —
+// for multi-word names like "Costa Rica" or "Guinea-Bissau")
+function splitWord(word) {
+  let slotIndex = 0
+  return word.split('').map(char => (
+    /[a-zA-Z]/.test(char)
+      ? { char, isLetter: true, slotIndex: slotIndex++ }
+      : { char, isLetter: false, slotIndex: -1 }
+  ))
+}
+
+function letterCount(word) {
+  return (word.match(/[a-zA-Z]/g) || []).length
+}
+
+function answerLetters(word) {
+  return word.toLowerCase().replace(/[^a-z]/g, '')
+}
+
+// Reassembles what the kid has placed so far, with separators shown in place
+function assembleAttempt(word, placed) {
+  return splitWord(word)
+    .map(p => (p.isLetter ? (placed[p.slotIndex]?.letter ?? '_') : p.char))
+    .join('')
+}
+
 function makeTiles(word) {
-  const letters = word.toLowerCase().split('')
+  const letters = answerLetters(word).split('')
   const usedLetters = new Set(letters)
   const decoyCount = 3 + Math.floor(Math.random() * 3) // 3-5
   const decoys = shuffle(ALPHABET.filter(c => !usedLetters.has(c))).slice(0, decoyCount)
@@ -35,7 +65,11 @@ function makeTiles(word) {
   return shuffle(all.map((letter, i) => ({ id: `${i}-${letter}-${Math.random().toString(36).slice(2, 7)}`, letter })))
 }
 
-export default function SpellingQuiz({ month, speech, onDone, onBack }) {
+export default function SpellingQuiz({ month, mode = 'spelling', speech, onDone, onBack }) {
+  const isCountryMode = mode === 'countrySpelling'
+  // Countries & flags aren't a graded difficulty ladder like the English
+  // lessons — run through every country in the region instead of a 10-cap.
+  const quizLength = isCountryMode ? month.words.length : WORD_QUIZ_LENGTH
   const [questions, setQuestions] = useState([])
   const [current, setCurrent]     = useState(0)
   const [tiles, setTiles]         = useState([])
@@ -48,14 +82,15 @@ export default function SpellingQuiz({ month, speech, onDone, onBack }) {
 
   const scoreRef = useRef(0)
   const [displayScore, setDisplayScore] = useState(0)
+  const elapsed = useStopwatch(month.num)
 
   useEffect(() => {
     scoreRef.current = 0
     setDisplayScore(0)
-    const words = shuffle([...month.words]).slice(0, QUIZ_LENGTH)
+    const words = shuffle([...month.words]).slice(0, quizLength)
     setQuestions(words)
     setCurrent(0)
-  }, [month])
+  }, [month, quizLength])
 
   const q = questions[current]
 
@@ -72,12 +107,13 @@ export default function SpellingQuiz({ month, speech, onDone, onBack }) {
     return () => clearTimeout(timer)
   }, [current, q]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Evaluate once every slot is filled
+  // Evaluate once every letter slot is filled
   useEffect(() => {
-    if (!q || phase !== 'active' || placed.length !== q.word.length) return
+    if (!q || phase !== 'active' || placed.length !== letterCount(q.word)) return
 
     const attempt = placed.map(t => t.letter).join('')
-    if (attempt === q.word) {
+    const displayAttempt = assembleAttempt(q.word, placed)
+    if (attempt === answerLetters(q.word)) {
       scoreRef.current += 1
       setDisplayScore(scoreRef.current)
       setStatus('correct')
@@ -94,18 +130,20 @@ export default function SpellingQuiz({ month, speech, onDone, onBack }) {
     setMascot(pick(TRY))
 
     if (nextAttempts >= MAX_ATTEMPTS) {
-      setFeedback(`You spelled "${attempt}" — the word was "${q.word}"`)
+      setFeedback(`You spelled "${displayAttempt}" — the word was "${q.word}"`)
       setPhase('done')
       const timer = setTimeout(() => speech.speak(q.word, true), 300)
       return () => clearTimeout(timer)
     } else {
-      setFeedback(`Not quite — you spelled "${attempt}". Tap a letter to fix it!`)
+      setFeedback(`Not quite — you spelled "${displayAttempt}". Tap a letter to fix it!`)
     }
   }, [placed]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Tiles stay put once placed — only their "used" state toggles — so the
+  // remaining tiles never reflow and steal the kid's next tap.
   const handlePlace = useCallback((tile) => {
-    if (phase !== 'active' || !q || placed.length >= q.word.length) return
-    setTiles(ts => ts.filter(t => t.id !== tile.id))
+    if (phase !== 'active' || !q || placed.length >= letterCount(q.word)) return
+    if (placed.some(p => p.id === tile.id)) return
     setPlaced(ps => [...ps, tile])
   }, [phase, q, placed])
 
@@ -114,64 +152,81 @@ export default function SpellingQuiz({ month, speech, onDone, onBack }) {
     const removed = placed[index]
     if (!removed) return
     setPlaced(placed.filter((_, i) => i !== index))
-    setTiles(ts => [...ts, removed])
   }, [phase, placed])
 
   const handleNext = useCallback(() => {
-    if (current + 1 >= QUIZ_LENGTH) {
+    if (current + 1 >= quizLength) {
       const finalScore = scoreRef.current
-      const pct   = finalScore / QUIZ_LENGTH
+      const pct   = finalScore / quizLength
       const stars = pct >= 0.9 ? 3 : pct >= 0.6 ? 2 : pct >= 0.3 ? 1 : 0
-      onDone({ score: finalScore, total: QUIZ_LENGTH, monthNum: month.num, stars })
+      onDone({ score: finalScore, total: quizLength, monthNum: month.num, stars })
     } else {
       setCurrent(c => c + 1)
     }
-  }, [current, month, onDone])
+  }, [current, month, onDone, quizLength])
+
+  // Auto-advance to the next word shortly after a correct spelling
+  useEffect(() => {
+    if (phase !== 'done' || status !== 'correct') return
+    const timer = setTimeout(() => handleNext(), AUTO_ADVANCE_MS)
+    return () => clearTimeout(timer)
+  }, [phase, status, handleNext])
 
   if (!q) return null
 
-  const progress = (current / QUIZ_LENGTH) * 100
+  const progress = (current / quizLength) * 100
+  const counterLabel = isCountryMode ? `${displayScore} of ${quizLength} correct` : `${current + 1}/${quizLength}`
 
   return (
     <Box minHeight="100vh" display="flex" flexDirection="column" bgcolor="background.default">
-      {/* Top bar */}
-      <Box
-        sx={{
-          background: month.color,
-          px: 2, py: 1.5,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1,
-        }}
-      >
-        <IconButton onClick={onBack} sx={{ color: 'white' }} size="small">
-          <ArrowBackIcon />
-        </IconButton>
-        <Typography color="white" fontWeight={800} flex={1} fontSize="0.9rem" noWrap>
-          {month.mascot} {month.title}: {month.theme}
-        </Typography>
-        <AccentPicker
-          accent={speech.accent}
-          availableCodes={speech.availableCodes}
-          onChange={speech.changeAccent}
-        />
-        <Chip
-          label={`${current + 1}/${QUIZ_LENGTH}`}
-          size="small"
-          sx={{ background: 'rgba(255,255,255,0.3)', color: 'white', fontWeight: 800, ml: 0.5 }}
+      {/* Sticky header: top bar + progress bar stay visible while scrolling */}
+      <Box sx={{ position: 'sticky', top: 0, zIndex: 10 }}>
+        <Box
+          sx={{
+            background: month.color,
+            px: 1.5, py: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 0.8,
+          }}
+        >
+          <Box display="flex" alignItems="center" gap={1}>
+            <IconButton onClick={onBack} sx={{ color: 'white' }} size="small">
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography color="white" fontWeight={800} flex={1} minWidth={0} fontSize="0.9rem" noWrap>
+              {month.mascot} {month.title}: {month.theme}
+            </Typography>
+            <Chip
+              label={counterLabel}
+              size="small"
+              sx={{ background: 'rgba(255,255,255,0.3)', color: 'white', fontWeight: 800, flexShrink: 0 }}
+            />
+          </Box>
+          <Box display="flex" alignItems="center" justifyContent="space-between" gap={1}>
+            <Chip
+              label={`⏱️ ${formatTime(elapsed)}`}
+              size="small"
+              sx={{ background: 'rgba(255,255,255,0.18)', color: 'white', fontWeight: 800 }}
+            />
+            <AccentPicker
+              accent={speech.accent}
+              availableCodes={speech.availableCodes}
+              onChange={speech.changeAccent}
+            />
+          </Box>
+        </Box>
+
+        <LinearProgress
+          variant="determinate"
+          value={progress}
+          sx={{
+            height: 6,
+            bgcolor: 'rgba(0,0,0,0.08)',
+            '& .MuiLinearProgress-bar': { background: month.color },
+          }}
         />
       </Box>
-
-      {/* Progress bar */}
-      <LinearProgress
-        variant="determinate"
-        value={progress}
-        sx={{
-          height: 6,
-          bgcolor: 'rgba(0,0,0,0.08)',
-          '& .MuiLinearProgress-bar': { background: month.color },
-        }}
-      />
 
       <Box
         flex={1}
@@ -202,9 +257,13 @@ export default function SpellingQuiz({ month, speech, onDone, onBack }) {
           </Typography>
         </Box>
 
-        {/* Word emoji clue */}
+        {/* Word/flag clue */}
         <Box textAlign="center" mb={1}>
-          <Typography fontSize="2rem">{q.emoji}</Typography>
+          {q.code ? (
+            <FlagIcon code={q.code} size="5rem" />
+          ) : (
+            <Typography fontSize="2rem" lineHeight={1}>{q.emoji}</Typography>
+          )}
         </Box>
 
         {/* Listen button */}
@@ -233,8 +292,29 @@ export default function SpellingQuiz({ month, speech, onDone, onBack }) {
 
         {/* Letter slots */}
         <Box display="flex" justifyContent="center" flexWrap="wrap" gap={1} mb={2.5}>
-          {Array.from({ length: q.word.length }).map((_, i) => {
-            const tile = placed[i]
+          {splitWord(q.word).map((part, i) => {
+            if (!part.isLetter) {
+              return (
+                <Box
+                  key={i}
+                  sx={{
+                    width: part.char === ' ' ? 14 : 20,
+                    height: 48,
+                    display: 'flex',
+                    alignItems: 'flex-end',
+                    justifyContent: 'center',
+                    fontSize: '1.4rem',
+                    fontWeight: 800,
+                    color: '#9575CD',
+                    pb: 0.5,
+                  }}
+                >
+                  {part.char === ' ' ? '' : part.char}
+                </Box>
+              )
+            }
+
+            const tile = placed[part.slotIndex]
             let sxExtra = {}
             if (status === 'correct' && phase === 'done') {
               sxExtra = { background: '#E8F5E9', borderColor: '#4CAF50', color: '#2E7D32' }
@@ -244,7 +324,7 @@ export default function SpellingQuiz({ month, speech, onDone, onBack }) {
             return (
               <Box
                 key={i}
-                onClick={() => tile && handleRemove(i)}
+                onClick={() => tile && handleRemove(part.slotIndex)}
                 className="no-select"
                 sx={{
                   width: 42,
@@ -269,44 +349,49 @@ export default function SpellingQuiz({ month, speech, onDone, onBack }) {
           })}
         </Box>
 
-        {/* Letter tile pool */}
+        {/* Letter tile pool — tiles keep a fixed position once placed so the
+            remaining tiles never shift under the kid's next tap */}
         <Box display="flex" justifyContent="center" flexWrap="wrap" gap={1} mb={2}>
-          {tiles.map(tile => (
-            <Button
-              key={tile.id}
-              variant="outlined"
-              className="no-select"
-              disabled={phase !== 'active'}
-              onClick={() => handlePlace(tile)}
-              sx={{
-                minWidth: 42,
-                width: 42,
-                height: 48,
-                p: 0,
-                fontSize: '1.4rem',
-                fontWeight: 800,
-                textTransform: 'uppercase',
-                borderRadius: 2,
-                borderWidth: 2,
-                borderColor: '#D1C4E9',
-                color: '#333',
-                background: '#fff',
-                transition: 'all 0.15s',
-                '&:hover:not(:disabled)': {
-                  background: '#EDE7F6',
-                  borderColor: '#7C4DFF',
-                  transform: 'scale(1.05)',
-                },
-                '&.Mui-disabled': {
-                  opacity: 0.35,
-                  borderColor: '#E0E0E0',
-                  color: '#aaa',
-                },
-              }}
-            >
-              {tile.letter}
-            </Button>
-          ))}
+          {tiles.map(tile => {
+            const used = placed.some(p => p.id === tile.id)
+            return (
+              <Button
+                key={tile.id}
+                variant="outlined"
+                className="no-select"
+                disabled={phase !== 'active' || used}
+                onClick={() => handlePlace(tile)}
+                sx={{
+                  minWidth: 42,
+                  width: 42,
+                  height: 48,
+                  p: 0,
+                  fontSize: '1.4rem',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  borderRadius: 2,
+                  borderWidth: 2,
+                  borderColor: '#D1C4E9',
+                  color: '#333',
+                  background: '#fff',
+                  transition: 'all 0.15s',
+                  visibility: used ? 'hidden' : 'visible',
+                  '&:hover:not(:disabled)': {
+                    background: '#EDE7F6',
+                    borderColor: '#7C4DFF',
+                    transform: 'scale(1.05)',
+                  },
+                  '&.Mui-disabled': {
+                    opacity: 0.35,
+                    borderColor: '#E0E0E0',
+                    color: '#aaa',
+                  },
+                }}
+              >
+                {tile.letter}
+              </Button>
+            )
+          })}
         </Box>
 
         {/* Feedback */}
@@ -342,7 +427,7 @@ export default function SpellingQuiz({ month, speech, onDone, onBack }) {
             boxShadow: phase === 'done' ? '0 4px 16px rgba(124,77,255,0.4)' : undefined,
           }}
         >
-          {current + 1 >= QUIZ_LENGTH ? '🏁 See Results' : 'Next Word →'}
+          {current + 1 >= quizLength ? '🏁 See Results' : 'Next Word →'}
         </Button>
       </Box>
     </Box>

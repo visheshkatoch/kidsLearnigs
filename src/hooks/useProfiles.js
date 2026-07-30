@@ -2,6 +2,14 @@ import { useState, useCallback } from 'react'
 
 const KEY = 'soundTrail_v1'
 
+// Maps a quiz mode to the field on a kid's profile where its progress lives
+export const PROGRESS_FIELD = {
+  pronounce: 'progress',
+  spelling: 'spellingProgress',
+  flags: 'flagProgress',
+  countrySpelling: 'countrySpellingProgress',
+}
+
 function load() {
   try {
     return JSON.parse(localStorage.getItem(KEY)) || { kids: [], activeId: null }
@@ -47,37 +55,18 @@ export default function useProfiles() {
     })
   }, [update])
 
-  const saveProgress = useCallback((kidId, monthNum, stars, score) => {
+  const saveModeProgress = useCallback((mode, kidId, monthNum, stars, score) => {
+    const field = PROGRESS_FIELD[mode]
     update(prev => ({
       ...prev,
       kids: prev.kids.map(k => {
         if (k.id !== kidId) return k
-        const existing = k.progress[monthNum] || { stars: 0, bestScore: 0, attempts: 0 }
+        const bucket = k[field] || {}
+        const existing = bucket[monthNum] || { stars: 0, bestScore: 0, attempts: 0 }
         return {
           ...k,
-          progress: {
-            ...k.progress,
-            [monthNum]: {
-              stars: Math.max(existing.stars, stars),
-              bestScore: Math.max(existing.bestScore, score),
-              attempts: existing.attempts + 1,
-            },
-          },
-        }
-      }),
-    }))
-  }, [update])
-
-  const saveSpellingProgress = useCallback((kidId, monthNum, stars, score) => {
-    update(prev => ({
-      ...prev,
-      kids: prev.kids.map(k => {
-        if (k.id !== kidId) return k
-        const existing = (k.spellingProgress || {})[monthNum] || { stars: 0, bestScore: 0, attempts: 0 }
-        return {
-          ...k,
-          spellingProgress: {
-            ...(k.spellingProgress || {}),
+          [field]: {
+            ...bucket,
             [monthNum]: {
               stars: Math.max(existing.stars, stars),
               bestScore: Math.max(existing.bestScore, score),
@@ -91,5 +80,5 @@ export default function useProfiles() {
 
   const activeKid = data.kids.find(k => k.id === data.activeId) ?? null
 
-  return { kids: data.kids, activeKid, addKid, setActiveKid, removeKid, saveProgress, saveSpellingProgress }
+  return { kids: data.kids, activeKid, addKid, setActiveKid, removeKid, saveModeProgress }
 }

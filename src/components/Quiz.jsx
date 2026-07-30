@@ -6,8 +6,12 @@ import {
 import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import AccentPicker from './AccentPicker'
+import useStopwatch, { formatTime } from '../hooks/useStopwatch'
+import FlagIcon from './FlagIcon'
 
-const QUIZ_LENGTH = 10
+const WORD_QUIZ_LENGTH = 10
+const AUTO_ADVANCE_MS = 2000
+const SPEAK_GAP_MS = 1200
 const HAPPY  = ['🥳', '🎉', '⭐', '🌟', '🎊', '🏆', '💪', '👏', '🤩']
 const TRY    = ['😅', '🤔', '💪', '😮', '🙈', '🐣', '😬']
 
@@ -24,7 +28,13 @@ function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)]
 }
 
-export default function Quiz({ month, speech, onDone, onBack }) {
+export default function Quiz({ month, mode = 'pronounce', speech, onDone, onBack }) {
+  // In flag-matching mode the flag is the clue — speaking the country name
+  // up front would give the answer away before the kid even looks at it.
+  const isFlagMode = mode === 'flags'
+  // Countries & flags aren't a graded difficulty ladder like the English
+  // lessons — run through every country in the region instead of a 10-cap.
+  const quizLength = isFlagMode ? month.words.length : WORD_QUIZ_LENGTH
   const [questions, setQuestions]     = useState([])
   const [current, setCurrent]         = useState(0)
   const [answered, setAnswered]       = useState(false)
@@ -36,18 +46,21 @@ export default function Quiz({ month, speech, onDone, onBack }) {
   // Track score in a ref to avoid stale-closure issues when calling onDone
   const scoreRef = useRef(0)
   const [displayScore, setDisplayScore] = useState(0)
+  const elapsed = useStopwatch(month.num)
 
   useEffect(() => {
     scoreRef.current = 0
     setDisplayScore(0)
-    const words = shuffle([...month.words]).slice(0, QUIZ_LENGTH)
-    const qs = words.map(w => ({
-      ...w,
-      options: shuffle([w.word, ...w.distractors]),
-    }))
+    const words = shuffle([...month.words]).slice(0, quizLength)
+    const qs = words.map(w => {
+      const distractors = w.distractors && w.distractors.length
+        ? w.distractors
+        : shuffle(month.words.filter(o => o.word !== w.word).map(o => o.word)).slice(0, 3)
+      return { ...w, options: shuffle([w.word, ...distractors]) }
+    })
     setQuestions(qs)
     setCurrent(0)
-  }, [month])
+  }, [month, quizLength])
 
   const q = questions[current]
 
@@ -58,6 +71,7 @@ export default function Quiz({ month, speech, onDone, onBack }) {
     setFeedback('')
     setShowPhonetic(false)
     setMascot(month.mascot)
+    if (isFlagMode) return
     const timer = setTimeout(() => speech.speak(q.word), 500)
     return () => clearTimeout(timer)
   }, [current, q]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -74,69 +88,97 @@ export default function Quiz({ month, speech, onDone, onBack }) {
       setDisplayScore(scoreRef.current)
       setMascot(pick(HAPPY))
       setFeedback(`✅ Correct! "${q.word}"`)
-      speech.speak('Great job!')
     } else {
       setMascot(pick(TRY))
       setFeedback(`The word was "${q.word}"`)
+    }
+
+    if (isFlagMode) {
+      // Pronounce what the kid picked, then the correct country name
+      speech.speak(opt)
+      if (opt !== q.word) {
+        setTimeout(() => speech.speak(q.word, true), SPEAK_GAP_MS)
+      }
+    } else if (correct) {
+      speech.speak('Great job!')
+    } else {
       speech.speak(q.word, true)
     }
-  }, [answered, q, speech])
+  }, [answered, q, speech, isFlagMode])
 
   const handleNext = useCallback(() => {
-    if (current + 1 >= QUIZ_LENGTH) {
+    if (current + 1 >= quizLength) {
       const finalScore = scoreRef.current
-      const pct   = finalScore / QUIZ_LENGTH
+      const pct   = finalScore / quizLength
       const stars = pct >= 0.9 ? 3 : pct >= 0.6 ? 2 : pct >= 0.3 ? 1 : 0
-      onDone({ score: finalScore, total: QUIZ_LENGTH, monthNum: month.num, stars })
+      onDone({ score: finalScore, total: quizLength, monthNum: month.num, stars })
     } else {
       setCurrent(c => c + 1)
     }
-  }, [current, month, onDone])
+  }, [current, month, onDone, quizLength])
+
+  // Auto-advance to the next question shortly after a correct answer
+  useEffect(() => {
+    if (!answered || !q || selected !== q.word) return
+    const timer = setTimeout(() => handleNext(), AUTO_ADVANCE_MS)
+    return () => clearTimeout(timer)
+  }, [answered, selected, q, handleNext])
 
   if (!q) return null
 
-  const progress = (current / QUIZ_LENGTH) * 100
+  const progress = (current / quizLength) * 100
+  const counterLabel = isFlagMode ? `${displayScore} of ${quizLength} correct` : `${current + 1}/${quizLength}`
 
   return (
     <Box minHeight="100vh" display="flex" flexDirection="column" bgcolor="background.default">
-      {/* Top bar */}
-      <Box
-        sx={{
-          background: month.color,
-          px: 2, py: 1.5,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1,
-        }}
-      >
-        <IconButton onClick={onBack} sx={{ color: 'white' }} size="small">
-          <ArrowBackIcon />
-        </IconButton>
-        <Typography color="white" fontWeight={800} flex={1} fontSize="0.9rem" noWrap>
-          {month.mascot} {month.title}: {month.theme}
-        </Typography>
-        <AccentPicker
-          accent={speech.accent}
-          availableCodes={speech.availableCodes}
-          onChange={speech.changeAccent}
-        />
-        <Chip
-          label={`${current + 1}/${QUIZ_LENGTH}`}
-          size="small"
-          sx={{ background: 'rgba(255,255,255,0.3)', color: 'white', fontWeight: 800, ml: 0.5 }}
+      {/* Sticky header: top bar + progress bar stay visible while scrolling */}
+      <Box sx={{ position: 'sticky', top: 0, zIndex: 10 }}>
+        <Box
+          sx={{
+            background: month.color,
+            px: 1.5, py: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 0.8,
+          }}
+        >
+          <Box display="flex" alignItems="center" gap={1}>
+            <IconButton onClick={onBack} sx={{ color: 'white' }} size="small">
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography color="white" fontWeight={800} flex={1} minWidth={0} fontSize="0.9rem" noWrap>
+              {month.mascot} {month.title}: {month.theme}
+            </Typography>
+            <Chip
+              label={counterLabel}
+              size="small"
+              sx={{ background: 'rgba(255,255,255,0.3)', color: 'white', fontWeight: 800, flexShrink: 0 }}
+            />
+          </Box>
+          <Box display="flex" alignItems="center" justifyContent="space-between" gap={1}>
+            <Chip
+              label={`⏱️ ${formatTime(elapsed)}`}
+              size="small"
+              sx={{ background: 'rgba(255,255,255,0.18)', color: 'white', fontWeight: 800 }}
+            />
+            <AccentPicker
+              accent={speech.accent}
+              availableCodes={speech.availableCodes}
+              onChange={speech.changeAccent}
+            />
+          </Box>
+        </Box>
+
+        <LinearProgress
+          variant="determinate"
+          value={progress}
+          sx={{
+            height: 6,
+            bgcolor: 'rgba(0,0,0,0.08)',
+            '& .MuiLinearProgress-bar': { background: month.color },
+          }}
         />
       </Box>
-
-      {/* Progress bar */}
-      <LinearProgress
-        variant="determinate"
-        value={progress}
-        sx={{
-          height: 6,
-          bgcolor: 'rgba(0,0,0,0.08)',
-          '& .MuiLinearProgress-bar': { background: month.color },
-        }}
-      />
 
       <Box
         flex={1}
@@ -167,47 +209,54 @@ export default function Quiz({ month, speech, onDone, onBack }) {
           </Typography>
         </Box>
 
-        {/* Word emoji clue */}
+        {/* Word/flag clue */}
         <Box textAlign="center" mb={1}>
-          <Typography fontSize="2rem">{q.emoji}</Typography>
+          {q.code ? (
+            <FlagIcon code={q.code} size="5rem" />
+          ) : (
+            <Typography fontSize="2rem" lineHeight={1}>{q.emoji}</Typography>
+          )}
         </Box>
 
-        {/* Listen button */}
-        <Box textAlign="center" mb={2.5}>
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={<VolumeUpIcon />}
-            onClick={() => speech.speak(q.word)}
-            sx={{
-              borderRadius: 50,
-              px: 3.5,
-              py: 1.4,
-              fontSize: '1.05rem',
-              background: 'linear-gradient(135deg, #FF6D00, #FFAB40)',
-              boxShadow: '0 4px 16px rgba(255,109,0,0.35)',
-              '&:hover': { background: 'linear-gradient(135deg, #E65100, #FF9800)' },
-            }}
-          >
-            Hear the Word 🔊
-          </Button>
-          <Typography variant="caption" display="block" mt={0.8} color="text.secondary">
-            Tap to hear it again
-          </Typography>
-
-          <Fade in={showPhonetic}>
-            <Typography
-              variant="body1"
-              mt={0.6}
-              fontWeight={800}
-              color="primary"
-              letterSpacing={2}
-              fontSize="1.05rem"
+        {/* Listen button — in flag mode, held back until answered so the
+            flag stays the only clue */}
+        {(!isFlagMode || answered) && (
+          <Box textAlign="center" mb={2.5}>
+            <Button
+              variant="contained"
+              size="large"
+              startIcon={<VolumeUpIcon />}
+              onClick={() => speech.speak(q.word)}
+              sx={{
+                borderRadius: 50,
+                px: 3.5,
+                py: 1.4,
+                fontSize: '1.05rem',
+                background: 'linear-gradient(135deg, #FF6D00, #FFAB40)',
+                boxShadow: '0 4px 16px rgba(255,109,0,0.35)',
+                '&:hover': { background: 'linear-gradient(135deg, #E65100, #FF9800)' },
+              }}
             >
-              {q.phonetic}
+              Hear the Word 🔊
+            </Button>
+            <Typography variant="caption" display="block" mt={0.8} color="text.secondary">
+              Tap to hear it again
             </Typography>
-          </Fade>
-        </Box>
+
+            <Fade in={showPhonetic}>
+              <Typography
+                variant="body1"
+                mt={0.6}
+                fontWeight={800}
+                color="primary"
+                letterSpacing={2}
+                fontSize="1.05rem"
+              >
+                {q.phonetic}
+              </Typography>
+            </Fade>
+          </Box>
+        )}
 
         {/* Answer buttons */}
         <Box display="flex" flexDirection="column" gap={1.4} mb={2}>
@@ -305,7 +354,7 @@ export default function Quiz({ month, speech, onDone, onBack }) {
             boxShadow: answered ? '0 4px 16px rgba(124,77,255,0.4)' : undefined,
           }}
         >
-          {current + 1 >= QUIZ_LENGTH ? '🏁 See Results' : 'Next Word →'}
+          {current + 1 >= quizLength ? '🏁 See Results' : 'Next Word →'}
         </Button>
       </Box>
     </Box>
