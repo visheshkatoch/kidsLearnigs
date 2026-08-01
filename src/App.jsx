@@ -28,6 +28,25 @@ const DATASET_BY_MODE = {
 }
 const SPELLING_MODES = new Set(['spelling', 'countrySpelling'])
 
+// Screens worth resuming into after an accidental reload — picking a
+// section and being mid-quiz. The main menu, kid picker, and results are
+// fine to just land back on fresh.
+const RESUMABLE_SCREENS = new Set(['home', 'quiz'])
+const SESSION_KEY = 'soundTrail_session_v1'
+
+function loadSession() {
+  try {
+    return JSON.parse(localStorage.getItem(SESSION_KEY))
+  } catch {
+    return null
+  }
+}
+
+function saveSession(session) {
+  if (session) localStorage.setItem(SESSION_KEY, JSON.stringify(session))
+  else localStorage.removeItem(SESSION_KEY)
+}
+
 function transformCountries(data) {
   return {
     months: data.sections.map(s => ({
@@ -49,6 +68,13 @@ export default function App() {
   const [selectedMonth, setSelectedMonth] = useState(null)
   const [lastResult, setLastResult] = useState(null)
 
+  // If we reloaded mid-lesson, hold off rendering the menu until we've had
+  // a chance to jump back to where the kid was (avoids a menu flash).
+  const [restoring, setRestoring] = useState(() => {
+    const session = loadSession()
+    return !!(session && RESUMABLE_SCREENS.has(session.screen))
+  })
+
   const profiles = useProfiles()
   const speech = useSpeech()
 
@@ -64,6 +90,39 @@ export default function App() {
   }, [])
 
   const dataset = DATASET_BY_MODE[mode] === 'countries' ? countries : words
+
+  // Resume onto the saved screen once the data + active kid it needs are ready
+  useEffect(() => {
+    if (!restoring) return
+    const session = loadSession()
+    if (!session || !profiles.activeKid) { setRestoring(false); return }
+    const ds = DATASET_BY_MODE[session.mode] === 'countries' ? countries : words
+    if (!ds) return // wait for the dataset this session needs to finish loading
+
+    if (session.screen === 'home') {
+      setMode(session.mode)
+      setScreen('home')
+    } else if (session.screen === 'quiz') {
+      // Quiz needs an actual section object, not just its number
+      const month = ds.months.find(m => m.num === session.monthNum)
+      if (month) {
+        setMode(session.mode)
+        setSelectedMonth(month)
+        setScreen('quiz')
+      } else {
+        saveSession(null)
+      }
+    } else {
+      saveSession(null)
+    }
+    setRestoring(false)
+  }, [restoring, words, countries, profiles.activeKid])
+
+  // Keep the saved session in sync so a reload can resume into it
+  useEffect(() => {
+    if (restoring) return
+    saveSession(RESUMABLE_SCREENS.has(screen) ? { screen, mode, monthNum: selectedMonth?.num } : null)
+  }, [restoring, screen, mode, selectedMonth])
 
   // When a menu item is selected, route into that section
   const handleMenuSelect = (id) => {
@@ -92,7 +151,7 @@ export default function App() {
   const handleMenu   = () => setScreen('menu')
   const handleSwitch = () => setScreen('kids')
 
-  if (screen !== 'menu' && !dataset) {
+  if (restoring || (screen !== 'menu' && !dataset)) {
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
