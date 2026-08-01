@@ -14,12 +14,12 @@ const HEADINGS = {
   spelling:        { heading: '🔤 Choose a Section to Spell',  subheading: 'Tap a section to start spelling!' },
   flags:           { heading: '🚩 Choose a Region',            subheading: 'Tap a region to match flags!' },
   countrySpelling: { heading: '🌍 Choose a Region to Spell',   subheading: 'Tap a region to spell countries!' },
+  counting:        { heading: '🔢 Choose a Section',           subheading: 'Tap a section to start counting!' },
 }
 
 // The English lessons build up in difficulty section by section, so they
-// stay gated behind finishing the previous one. Countries & flags are just
-// a big shuffled bucket of world geography — no natural difficulty order —
-// so those modes are left open for kids to jump around freely.
+// stay gated behind finishing the previous one. Countries & flags and
+// maths are left open for kids to jump around freely.
 const LOCKABLE_MODES = new Set(['pronounce', 'spelling'])
 
 const STAGE_CHIP = {

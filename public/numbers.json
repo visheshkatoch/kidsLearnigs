@@ -1,0 +1,1985 @@
+{
+  "months": [
+    {
+      "num": 1,
+      "title": "Section 1",
+      "theme": "Counting 1-10",
+      "stage": "Beginner",
+      "color": "#FF6D00",
+      "mascot": "🔢",
+      "problemType": "tapcount",
+      "words": [
+        {
+          "word": "1",
+          "count": 1,
+          "emoji": "🍊"
+        },
+        {
+          "word": "1",
+          "count": 1,
+          "emoji": "⚽"
+        },
+        {
+          "word": "2",
+          "count": 2,
+          "emoji": "🧸"
+        },
+        {
+          "word": "2",
+          "count": 2,
+          "emoji": "🍎"
+        },
+        {
+          "word": "3",
+          "count": 3,
+          "emoji": "🍎"
+        },
+        {
+          "word": "3",
+          "count": 3,
+          "emoji": "🚗"
+        },
+        {
+          "word": "4",
+          "count": 4,
+          "emoji": "🧸"
+        },
+        {
+          "word": "4",
+          "count": 4,
+          "emoji": "🍇"
+        },
+        {
+          "word": "5",
+          "count": 5,
+          "emoji": "🍎"
+        },
+        {
+          "word": "5",
+          "count": 5,
+          "emoji": "🚗"
+        },
+        {
+          "word": "6",
+          "count": 6,
+          "emoji": "🍌"
+        },
+        {
+          "word": "6",
+          "count": 6,
+          "emoji": "🍇"
+        },
+        {
+          "word": "7",
+          "count": 7,
+          "emoji": "🍊"
+        },
+        {
+          "word": "7",
+          "count": 7,
+          "emoji": "🍌"
+        },
+        {
+          "word": "8",
+          "count": 8,
+          "emoji": "🚗"
+        },
+        {
+          "word": "8",
+          "count": 8,
+          "emoji": "⚽"
+        },
+        {
+          "word": "9",
+          "count": 9,
+          "emoji": "🍇"
+        },
+        {
+          "word": "9",
+          "count": 9,
+          "emoji": "🦋"
+        },
+        {
+          "word": "10",
+          "count": 10,
+          "emoji": "🦋"
+        },
+        {
+          "word": "10",
+          "count": 10,
+          "emoji": "🍓"
+        }
+      ]
+    },
+    {
+      "num": 2,
+      "title": "Section 2",
+      "theme": "Number Recognition",
+      "stage": "Beginner+",
+      "color": "#FFA94D",
+      "mascot": "🎯",
+      "problemType": "count-mcq",
+      "words": [
+        {
+          "word": "1",
+          "count": 1,
+          "emoji": "🚗",
+          "distractors": [
+            "8",
+            "2",
+            "3"
+          ]
+        },
+        {
+          "word": "1",
+          "count": 1,
+          "emoji": "🍇",
+          "distractors": [
+            "2",
+            "5",
+            "6"
+          ]
+        },
+        {
+          "word": "2",
+          "count": 2,
+          "emoji": "🎈",
+          "distractors": [
+            "10",
+            "3",
+            "1"
+          ]
+        },
+        {
+          "word": "2",
+          "count": 2,
+          "emoji": "🚗",
+          "distractors": [
+            "6",
+            "4",
+            "8"
+          ]
+        },
+        {
+          "word": "3",
+          "count": 3,
+          "emoji": "🚗",
+          "distractors": [
+            "10",
+            "8",
+            "6"
+          ]
+        },
+        {
+          "word": "3",
+          "count": 3,
+          "emoji": "🦋",
+          "distractors": [
+            "5",
+            "8",
+            "6"
+          ]
+        },
+        {
+          "word": "4",
+          "count": 4,
+          "emoji": "🌟",
+          "distractors": [
+            "1",
+            "10",
+            "2"
+          ]
+        },
+        {
+          "word": "4",
+          "count": 4,
+          "emoji": "🦋",
+          "distractors": [
+            "1",
+            "9",
+            "3"
+          ]
+        },
+        {
+          "word": "5",
+          "count": 5,
+          "emoji": "🍌",
+          "distractors": [
+            "9",
+            "1",
+            "2"
+          ]
+        },
+        {
+          "word": "5",
+          "count": 5,
+          "emoji": "🍊",
+          "distractors": [
+            "10",
+            "7",
+            "6"
+          ]
+        },
+        {
+          "word": "6",
+          "count": 6,
+          "emoji": "🍌",
+          "distractors": [
+            "2",
+            "9",
+            "10"
+          ]
+        },
+        {
+          "word": "6",
+          "count": 6,
+          "emoji": "🍪",
+          "distractors": [
+            "2",
+            "5",
+            "9"
+          ]
+        },
+        {
+          "word": "7",
+          "count": 7,
+          "emoji": "🍌",
+          "distractors": [
+            "3",
+            "10",
+            "9"
+          ]
+        },
+        {
+          "word": "7",
+          "count": 7,
+          "emoji": "🍪",
+          "distractors": [
+            "5",
+            "8",
+            "4"
+          ]
+        },
+        {
+          "word": "8",
+          "count": 8,
+          "emoji": "🍇",
+          "distractors": [
+            "10",
+            "3",
+            "7"
+          ]
+        },
+        {
+          "word": "8",
+          "count": 8,
+          "emoji": "⚽",
+          "distractors": [
+            "3",
+            "4",
+            "1"
+          ]
+        },
+        {
+          "word": "9",
+          "count": 9,
+          "emoji": "🍇",
+          "distractors": [
+            "5",
+            "7",
+            "10"
+          ]
+        },
+        {
+          "word": "9",
+          "count": 9,
+          "emoji": "🍊",
+          "distractors": [
+            "1",
+            "2",
+            "8"
+          ]
+        },
+        {
+          "word": "10",
+          "count": 10,
+          "emoji": "🌟",
+          "distractors": [
+            "4",
+            "5",
+            "3"
+          ]
+        },
+        {
+          "word": "10",
+          "count": 10,
+          "emoji": "🍪",
+          "distractors": [
+            "5",
+            "2",
+            "8"
+          ]
+        }
+      ]
+    },
+    {
+      "num": 3,
+      "title": "Section 3",
+      "theme": "Counting 11-20",
+      "stage": "Easy",
+      "color": "#69DB7C",
+      "mascot": "🔟",
+      "problemType": "count-mcq",
+      "words": [
+        {
+          "word": "11",
+          "count": 11,
+          "emoji": "🍪",
+          "distractors": [
+            "18",
+            "15",
+            "19"
+          ]
+        },
+        {
+          "word": "11",
+          "count": 11,
+          "emoji": "🍇",
+          "distractors": [
+            "19",
+            "18",
+            "17"
+          ]
+        },
+        {
+          "word": "12",
+          "count": 12,
+          "emoji": "🎈",
+          "distractors": [
+            "11",
+            "16",
+            "15"
+          ]
+        },
+        {
+          "word": "12",
+          "count": 12,
+          "emoji": "🍌",
+          "distractors": [
+            "14",
+            "16",
+            "13"
+          ]
+        },
+        {
+          "word": "13",
+          "count": 13,
+          "emoji": "🍇",
+          "distractors": [
+            "17",
+            "16",
+            "19"
+          ]
+        },
+        {
+          "word": "13",
+          "count": 13,
+          "emoji": "🧸",
+          "distractors": [
+            "19",
+            "12",
+            "15"
+          ]
+        },
+        {
+          "word": "14",
+          "count": 14,
+          "emoji": "🎈",
+          "distractors": [
+            "13",
+            "18",
+            "20"
+          ]
+        },
+        {
+          "word": "14",
+          "count": 14,
+          "emoji": "🍇",
+          "distractors": [
+            "17",
+            "16",
+            "20"
+          ]
+        },
+        {
+          "word": "15",
+          "count": 15,
+          "emoji": "🍌",
+          "distractors": [
+            "19",
+            "11",
+            "20"
+          ]
+        },
+        {
+          "word": "15",
+          "count": 15,
+          "emoji": "🍊",
+          "distractors": [
+            "16",
+            "14",
+            "19"
+          ]
+        },
+        {
+          "word": "16",
+          "count": 16,
+          "emoji": "🍎",
+          "distractors": [
+            "15",
+            "13",
+            "19"
+          ]
+        },
+        {
+          "word": "16",
+          "count": 16,
+          "emoji": "🍇",
+          "distractors": [
+            "14",
+            "20",
+            "11"
+          ]
+        },
+        {
+          "word": "17",
+          "count": 17,
+          "emoji": "🧸",
+          "distractors": [
+            "19",
+            "20",
+            "11"
+          ]
+        },
+        {
+          "word": "17",
+          "count": 17,
+          "emoji": "🍎",
+          "distractors": [
+            "20",
+            "13",
+            "12"
+          ]
+        },
+        {
+          "word": "18",
+          "count": 18,
+          "emoji": "🍌",
+          "distractors": [
+            "16",
+            "12",
+            "14"
+          ]
+        },
+        {
+          "word": "18",
+          "count": 18,
+          "emoji": "🍪",
+          "distractors": [
+            "19",
+            "16",
+            "13"
+          ]
+        },
+        {
+          "word": "19",
+          "count": 19,
+          "emoji": "🍪",
+          "distractors": [
+            "17",
+            "18",
+            "12"
+          ]
+        },
+        {
+          "word": "19",
+          "count": 19,
+          "emoji": "🚗",
+          "distractors": [
+            "14",
+            "12",
+            "20"
+          ]
+        },
+        {
+          "word": "20",
+          "count": 20,
+          "emoji": "⚽",
+          "distractors": [
+            "11",
+            "19",
+            "17"
+          ]
+        },
+        {
+          "word": "20",
+          "count": 20,
+          "emoji": "🦋",
+          "distractors": [
+            "12",
+            "14",
+            "13"
+          ]
+        }
+      ]
+    },
+    {
+      "num": 4,
+      "title": "Section 4",
+      "theme": "Addition",
+      "stage": "Easy+",
+      "color": "#4DABF7",
+      "mascot": "➕",
+      "problemType": "add-mcq",
+      "words": [
+        {
+          "word": "10",
+          "groups": [
+            {
+              "emoji": "🍎",
+              "count": 8
+            },
+            {
+              "emoji": "🍎",
+              "count": 2
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "9",
+            "5",
+            "12"
+          ]
+        },
+        {
+          "word": "7",
+          "groups": [
+            {
+              "emoji": "🍓",
+              "count": 3
+            },
+            {
+              "emoji": "🍓",
+              "count": 4
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "9",
+            "5",
+            "2"
+          ]
+        },
+        {
+          "word": "2",
+          "groups": [
+            {
+              "emoji": "🍌",
+              "count": 1
+            },
+            {
+              "emoji": "🍌",
+              "count": 1
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "12",
+            "4",
+            "1"
+          ]
+        },
+        {
+          "word": "7",
+          "groups": [
+            {
+              "emoji": "⚽",
+              "count": 4
+            },
+            {
+              "emoji": "⚽",
+              "count": 3
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "5",
+            "4",
+            "9"
+          ]
+        },
+        {
+          "word": "10",
+          "groups": [
+            {
+              "emoji": "🍓",
+              "count": 2
+            },
+            {
+              "emoji": "🍓",
+              "count": 8
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "3",
+            "12",
+            "4"
+          ]
+        },
+        {
+          "word": "9",
+          "groups": [
+            {
+              "emoji": "🧸",
+              "count": 8
+            },
+            {
+              "emoji": "🧸",
+              "count": 1
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "11",
+            "1",
+            "2"
+          ]
+        },
+        {
+          "word": "6",
+          "groups": [
+            {
+              "emoji": "🍪",
+              "count": 1
+            },
+            {
+              "emoji": "🍪",
+              "count": 5
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "11",
+            "4",
+            "10"
+          ]
+        },
+        {
+          "word": "4",
+          "groups": [
+            {
+              "emoji": "🌟",
+              "count": 1
+            },
+            {
+              "emoji": "🌟",
+              "count": 3
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "2",
+            "3",
+            "6"
+          ]
+        },
+        {
+          "word": "7",
+          "groups": [
+            {
+              "emoji": "🍇",
+              "count": 5
+            },
+            {
+              "emoji": "🍇",
+              "count": 2
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "8",
+            "10",
+            "9"
+          ]
+        },
+        {
+          "word": "5",
+          "groups": [
+            {
+              "emoji": "⚽",
+              "count": 3
+            },
+            {
+              "emoji": "⚽",
+              "count": 2
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "9",
+            "10",
+            "6"
+          ]
+        },
+        {
+          "word": "9",
+          "groups": [
+            {
+              "emoji": "🍎",
+              "count": 2
+            },
+            {
+              "emoji": "🍎",
+              "count": 7
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "8",
+            "12",
+            "11"
+          ]
+        },
+        {
+          "word": "8",
+          "groups": [
+            {
+              "emoji": "🍇",
+              "count": 1
+            },
+            {
+              "emoji": "🍇",
+              "count": 7
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "12",
+            "10",
+            "5"
+          ]
+        },
+        {
+          "word": "5",
+          "groups": [
+            {
+              "emoji": "🦋",
+              "count": 4
+            },
+            {
+              "emoji": "🦋",
+              "count": 1
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "3",
+            "6",
+            "1"
+          ]
+        },
+        {
+          "word": "7",
+          "groups": [
+            {
+              "emoji": "🌟",
+              "count": 1
+            },
+            {
+              "emoji": "🌟",
+              "count": 6
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "2",
+            "8",
+            "12"
+          ]
+        },
+        {
+          "word": "6",
+          "groups": [
+            {
+              "emoji": "🍓",
+              "count": 2
+            },
+            {
+              "emoji": "🍓",
+              "count": 4
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "11",
+            "4",
+            "7"
+          ]
+        },
+        {
+          "word": "10",
+          "groups": [
+            {
+              "emoji": "🍌",
+              "count": 3
+            },
+            {
+              "emoji": "🍌",
+              "count": 7
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "4",
+            "12",
+            "2"
+          ]
+        },
+        {
+          "word": "9",
+          "groups": [
+            {
+              "emoji": "🍊",
+              "count": 1
+            },
+            {
+              "emoji": "🍊",
+              "count": 8
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "11",
+            "3",
+            "12"
+          ]
+        },
+        {
+          "word": "7",
+          "groups": [
+            {
+              "emoji": "⚽",
+              "count": 6
+            },
+            {
+              "emoji": "⚽",
+              "count": 1
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "11",
+            "3",
+            "8"
+          ]
+        },
+        {
+          "word": "8",
+          "groups": [
+            {
+              "emoji": "🍓",
+              "count": 6
+            },
+            {
+              "emoji": "🍓",
+              "count": 2
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "1",
+            "3",
+            "9"
+          ]
+        },
+        {
+          "word": "6",
+          "groups": [
+            {
+              "emoji": "🎈",
+              "count": 3
+            },
+            {
+              "emoji": "🎈",
+              "count": 3
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "9",
+            "11",
+            "3"
+          ]
+        },
+        {
+          "word": "8",
+          "groups": [
+            {
+              "emoji": "🧸",
+              "count": 5
+            },
+            {
+              "emoji": "🧸",
+              "count": 3
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "9",
+            "1",
+            "2"
+          ]
+        },
+        {
+          "word": "9",
+          "groups": [
+            {
+              "emoji": "⚽",
+              "count": 5
+            },
+            {
+              "emoji": "⚽",
+              "count": 4
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "1",
+            "3",
+            "10"
+          ]
+        },
+        {
+          "word": "10",
+          "groups": [
+            {
+              "emoji": "🚗",
+              "count": 9
+            },
+            {
+              "emoji": "🚗",
+              "count": 1
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "6",
+            "7",
+            "4"
+          ]
+        },
+        {
+          "word": "8",
+          "groups": [
+            {
+              "emoji": "🦋",
+              "count": 3
+            },
+            {
+              "emoji": "🦋",
+              "count": 5
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "2",
+            "9",
+            "5"
+          ]
+        },
+        {
+          "word": "4",
+          "groups": [
+            {
+              "emoji": "🍪",
+              "count": 3
+            },
+            {
+              "emoji": "🍪",
+              "count": 1
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "8",
+            "3",
+            "7"
+          ]
+        },
+        {
+          "word": "9",
+          "groups": [
+            {
+              "emoji": "🍪",
+              "count": 7
+            },
+            {
+              "emoji": "🍪",
+              "count": 2
+            }
+          ],
+          "operator": "+",
+          "distractors": [
+            "3",
+            "12",
+            "5"
+          ]
+        }
+      ]
+    },
+    {
+      "num": 5,
+      "title": "Section 5",
+      "theme": "Subtraction",
+      "stage": "Medium",
+      "color": "#9775FA",
+      "mascot": "➖",
+      "problemType": "subtract-mcq",
+      "words": [
+        {
+          "word": "4",
+          "emoji": "🍌",
+          "count": 6,
+          "crossedOut": 2,
+          "distractors": [
+            "2",
+            "6",
+            "0"
+          ]
+        },
+        {
+          "word": "2",
+          "emoji": "🍪",
+          "count": 7,
+          "crossedOut": 5,
+          "distractors": [
+            "1",
+            "10",
+            "7"
+          ]
+        },
+        {
+          "word": "2",
+          "emoji": "🌟",
+          "count": 6,
+          "crossedOut": 4,
+          "distractors": [
+            "5",
+            "7",
+            "9"
+          ]
+        },
+        {
+          "word": "1",
+          "emoji": "🍎",
+          "count": 10,
+          "crossedOut": 9,
+          "distractors": [
+            "5",
+            "9",
+            "3"
+          ]
+        },
+        {
+          "word": "9",
+          "emoji": "🦋",
+          "count": 10,
+          "crossedOut": 1,
+          "distractors": [
+            "6",
+            "2",
+            "1"
+          ]
+        },
+        {
+          "word": "3",
+          "emoji": "🦋",
+          "count": 9,
+          "crossedOut": 6,
+          "distractors": [
+            "8",
+            "9",
+            "2"
+          ]
+        },
+        {
+          "word": "7",
+          "emoji": "🎈",
+          "count": 10,
+          "crossedOut": 3,
+          "distractors": [
+            "1",
+            "4",
+            "5"
+          ]
+        },
+        {
+          "word": "2",
+          "emoji": "🍪",
+          "count": 10,
+          "crossedOut": 8,
+          "distractors": [
+            "9",
+            "10",
+            "7"
+          ]
+        },
+        {
+          "word": "4",
+          "emoji": "🌟",
+          "count": 5,
+          "crossedOut": 1,
+          "distractors": [
+            "7",
+            "5",
+            "0"
+          ]
+        },
+        {
+          "word": "5",
+          "emoji": "🍌",
+          "count": 6,
+          "crossedOut": 1,
+          "distractors": [
+            "0",
+            "4",
+            "6"
+          ]
+        },
+        {
+          "word": "1",
+          "emoji": "🧸",
+          "count": 5,
+          "crossedOut": 4,
+          "distractors": [
+            "6",
+            "3",
+            "9"
+          ]
+        },
+        {
+          "word": "7",
+          "emoji": "🍊",
+          "count": 9,
+          "crossedOut": 2,
+          "distractors": [
+            "9",
+            "4",
+            "6"
+          ]
+        },
+        {
+          "word": "3",
+          "emoji": "🦋",
+          "count": 10,
+          "crossedOut": 7,
+          "distractors": [
+            "7",
+            "0",
+            "9"
+          ]
+        },
+        {
+          "word": "4",
+          "emoji": "🍇",
+          "count": 7,
+          "crossedOut": 3,
+          "distractors": [
+            "7",
+            "8",
+            "5"
+          ]
+        },
+        {
+          "word": "4",
+          "emoji": "🧸",
+          "count": 8,
+          "crossedOut": 4,
+          "distractors": [
+            "9",
+            "7",
+            "2"
+          ]
+        },
+        {
+          "word": "4",
+          "emoji": "🧸",
+          "count": 10,
+          "crossedOut": 6,
+          "distractors": [
+            "3",
+            "5",
+            "0"
+          ]
+        },
+        {
+          "word": "1",
+          "emoji": "🍎",
+          "count": 8,
+          "crossedOut": 7,
+          "distractors": [
+            "5",
+            "7",
+            "2"
+          ]
+        },
+        {
+          "word": "1",
+          "emoji": "🚗",
+          "count": 3,
+          "crossedOut": 2,
+          "distractors": [
+            "2",
+            "5",
+            "8"
+          ]
+        },
+        {
+          "word": "1",
+          "emoji": "🧸",
+          "count": 9,
+          "crossedOut": 8,
+          "distractors": [
+            "2",
+            "3",
+            "9"
+          ]
+        },
+        {
+          "word": "1",
+          "emoji": "⚽",
+          "count": 6,
+          "crossedOut": 5,
+          "distractors": [
+            "5",
+            "3",
+            "6"
+          ]
+        },
+        {
+          "word": "2",
+          "emoji": "🎈",
+          "count": 8,
+          "crossedOut": 6,
+          "distractors": [
+            "3",
+            "10",
+            "5"
+          ]
+        },
+        {
+          "word": "8",
+          "emoji": "🍊",
+          "count": 9,
+          "crossedOut": 1,
+          "distractors": [
+            "4",
+            "5",
+            "7"
+          ]
+        },
+        {
+          "word": "3",
+          "emoji": "🌟",
+          "count": 6,
+          "crossedOut": 3,
+          "distractors": [
+            "8",
+            "0",
+            "7"
+          ]
+        },
+        {
+          "word": "6",
+          "emoji": "🍓",
+          "count": 10,
+          "crossedOut": 4,
+          "distractors": [
+            "7",
+            "1",
+            "8"
+          ]
+        },
+        {
+          "word": "7",
+          "emoji": "🍊",
+          "count": 8,
+          "crossedOut": 1,
+          "distractors": [
+            "1",
+            "6",
+            "3"
+          ]
+        },
+        {
+          "word": "2",
+          "emoji": "🧸",
+          "count": 9,
+          "crossedOut": 7,
+          "distractors": [
+            "9",
+            "7",
+            "3"
+          ]
+        }
+      ]
+    },
+    {
+      "num": 6,
+      "title": "Section 6",
+      "theme": "Comparing Quantities",
+      "stage": "Medium+",
+      "color": "#FF8CC8",
+      "mascot": "⚖️",
+      "problemType": "compare-mcq",
+      "words": [
+        {
+          "word": "Same Amount",
+          "groups": [
+            {
+              "emoji": "⚽",
+              "count": 9
+            },
+            {
+              "emoji": "🌟",
+              "count": 9
+            }
+          ],
+          "distractors": [
+            "More Balls",
+            "More Stars"
+          ]
+        },
+        {
+          "word": "More Apples",
+          "groups": [
+            {
+              "emoji": "🍌",
+              "count": 1
+            },
+            {
+              "emoji": "🍎",
+              "count": 2
+            }
+          ],
+          "distractors": [
+            "More Bananas",
+            "Same Amount"
+          ]
+        },
+        {
+          "word": "More Balloons",
+          "groups": [
+            {
+              "emoji": "🎈",
+              "count": 7
+            },
+            {
+              "emoji": "🦋",
+              "count": 5
+            }
+          ],
+          "distractors": [
+            "More Butterflies",
+            "Same Amount"
+          ]
+        },
+        {
+          "word": "More Stars",
+          "groups": [
+            {
+              "emoji": "🌟",
+              "count": 5
+            },
+            {
+              "emoji": "🍌",
+              "count": 1
+            }
+          ],
+          "distractors": [
+            "More Bananas",
+            "Same Amount"
+          ]
+        },
+        {
+          "word": "Same Amount",
+          "groups": [
+            {
+              "emoji": "⚽",
+              "count": 7
+            },
+            {
+              "emoji": "🍎",
+              "count": 7
+            }
+          ],
+          "distractors": [
+            "More Balls",
+            "More Apples"
+          ]
+        },
+        {
+          "word": "Same Amount",
+          "groups": [
+            {
+              "emoji": "🍌",
+              "count": 4
+            },
+            {
+              "emoji": "⚽",
+              "count": 4
+            }
+          ],
+          "distractors": [
+            "More Bananas",
+            "More Balls"
+          ]
+        },
+        {
+          "word": "More Stars",
+          "groups": [
+            {
+              "emoji": "🌟",
+              "count": 9
+            },
+            {
+              "emoji": "🍌",
+              "count": 8
+            }
+          ],
+          "distractors": [
+            "More Bananas",
+            "Same Amount"
+          ]
+        },
+        {
+          "word": "More Apples",
+          "groups": [
+            {
+              "emoji": "🍎",
+              "count": 6
+            },
+            {
+              "emoji": "🦋",
+              "count": 5
+            }
+          ],
+          "distractors": [
+            "More Butterflies",
+            "Same Amount"
+          ]
+        },
+        {
+          "word": "Same Amount",
+          "groups": [
+            {
+              "emoji": "🎈",
+              "count": 3
+            },
+            {
+              "emoji": "🌟",
+              "count": 3
+            }
+          ],
+          "distractors": [
+            "More Balloons",
+            "More Stars"
+          ]
+        },
+        {
+          "word": "More Cookies",
+          "groups": [
+            {
+              "emoji": "🌟",
+              "count": 1
+            },
+            {
+              "emoji": "🍪",
+              "count": 3
+            }
+          ],
+          "distractors": [
+            "More Stars",
+            "Same Amount"
+          ]
+        },
+        {
+          "word": "More Bananas",
+          "groups": [
+            {
+              "emoji": "🌟",
+              "count": 2
+            },
+            {
+              "emoji": "🍌",
+              "count": 8
+            }
+          ],
+          "distractors": [
+            "More Stars",
+            "Same Amount"
+          ]
+        },
+        {
+          "word": "Same Amount",
+          "groups": [
+            {
+              "emoji": "🦋",
+              "count": 6
+            },
+            {
+              "emoji": "🍌",
+              "count": 6
+            }
+          ],
+          "distractors": [
+            "More Butterflies",
+            "More Bananas"
+          ]
+        },
+        {
+          "word": "Same Amount",
+          "groups": [
+            {
+              "emoji": "🍌",
+              "count": 5
+            },
+            {
+              "emoji": "🦋",
+              "count": 5
+            }
+          ],
+          "distractors": [
+            "More Bananas",
+            "More Butterflies"
+          ]
+        },
+        {
+          "word": "More Cookies",
+          "groups": [
+            {
+              "emoji": "🍪",
+              "count": 5
+            },
+            {
+              "emoji": "🍌",
+              "count": 1
+            }
+          ],
+          "distractors": [
+            "More Bananas",
+            "Same Amount"
+          ]
+        },
+        {
+          "word": "More Bananas",
+          "groups": [
+            {
+              "emoji": "🎈",
+              "count": 4
+            },
+            {
+              "emoji": "🍌",
+              "count": 8
+            }
+          ],
+          "distractors": [
+            "More Balloons",
+            "Same Amount"
+          ]
+        },
+        {
+          "word": "More Apples",
+          "groups": [
+            {
+              "emoji": "⚽",
+              "count": 4
+            },
+            {
+              "emoji": "🍎",
+              "count": 6
+            }
+          ],
+          "distractors": [
+            "More Balls",
+            "Same Amount"
+          ]
+        },
+        {
+          "word": "More Apples",
+          "groups": [
+            {
+              "emoji": "🌟",
+              "count": 6
+            },
+            {
+              "emoji": "🍎",
+              "count": 8
+            }
+          ],
+          "distractors": [
+            "More Stars",
+            "Same Amount"
+          ]
+        },
+        {
+          "word": "More Balloons",
+          "groups": [
+            {
+              "emoji": "🍎",
+              "count": 1
+            },
+            {
+              "emoji": "🎈",
+              "count": 8
+            }
+          ],
+          "distractors": [
+            "More Apples",
+            "Same Amount"
+          ]
+        },
+        {
+          "word": "More Balloons",
+          "groups": [
+            {
+              "emoji": "🌟",
+              "count": 4
+            },
+            {
+              "emoji": "🎈",
+              "count": 7
+            }
+          ],
+          "distractors": [
+            "More Stars",
+            "Same Amount"
+          ]
+        },
+        {
+          "word": "More Butterflies",
+          "groups": [
+            {
+              "emoji": "🦋",
+              "count": 5
+            },
+            {
+              "emoji": "⚽",
+              "count": 2
+            }
+          ],
+          "distractors": [
+            "More Balls",
+            "Same Amount"
+          ]
+        },
+        {
+          "word": "More Butterflies",
+          "groups": [
+            {
+              "emoji": "🎈",
+              "count": 4
+            },
+            {
+              "emoji": "🦋",
+              "count": 6
+            }
+          ],
+          "distractors": [
+            "More Balloons",
+            "Same Amount"
+          ]
+        },
+        {
+          "word": "More Apples",
+          "groups": [
+            {
+              "emoji": "🍎",
+              "count": 6
+            },
+            {
+              "emoji": "🚗",
+              "count": 2
+            }
+          ],
+          "distractors": [
+            "More Cars",
+            "Same Amount"
+          ]
+        },
+        {
+          "word": "Same Amount",
+          "groups": [
+            {
+              "emoji": "🍪",
+              "count": 5
+            },
+            {
+              "emoji": "⚽",
+              "count": 5
+            }
+          ],
+          "distractors": [
+            "More Cookies",
+            "More Balls"
+          ]
+        },
+        {
+          "word": "Same Amount",
+          "groups": [
+            {
+              "emoji": "🦋",
+              "count": 4
+            },
+            {
+              "emoji": "🌟",
+              "count": 4
+            }
+          ],
+          "distractors": [
+            "More Butterflies",
+            "More Stars"
+          ]
+        }
+      ]
+    },
+    {
+      "num": 7,
+      "title": "Section 7",
+      "theme": "Shapes & Patterns",
+      "stage": "Hard",
+      "color": "#FFD43B",
+      "mascot": "🔺",
+      "problemType": "shape-mcq",
+      "words": [
+        {
+          "word": "Heart",
+          "emoji": "💛",
+          "distractors": [
+            "Triangle",
+            "Star",
+            "Circle"
+          ]
+        },
+        {
+          "word": "Circle",
+          "emoji": "🔴",
+          "distractors": [
+            "Square",
+            "Diamond",
+            "Star"
+          ]
+        },
+        {
+          "word": "Square",
+          "emoji": "🟪",
+          "distractors": [
+            "Heart",
+            "Triangle",
+            "Circle"
+          ]
+        },
+        {
+          "word": "Star",
+          "emoji": "⭐",
+          "distractors": [
+            "Square",
+            "Diamond",
+            "Heart"
+          ]
+        },
+        {
+          "word": "Diamond",
+          "emoji": "🔶",
+          "distractors": [
+            "Square",
+            "Heart",
+            "Triangle"
+          ]
+        },
+        {
+          "word": "Heart",
+          "emoji": "💚",
+          "distractors": [
+            "Diamond",
+            "Star",
+            "Circle"
+          ]
+        },
+        {
+          "word": "Square",
+          "emoji": "🟩",
+          "distractors": [
+            "Triangle",
+            "Circle",
+            "Star"
+          ]
+        },
+        {
+          "word": "Heart",
+          "emoji": "🧡",
+          "distractors": [
+            "Triangle",
+            "Square",
+            "Diamond"
+          ]
+        },
+        {
+          "word": "Square",
+          "emoji": "🟧",
+          "distractors": [
+            "Triangle",
+            "Diamond",
+            "Star"
+          ]
+        },
+        {
+          "word": "Star",
+          "emoji": "🌟",
+          "distractors": [
+            "Circle",
+            "Triangle",
+            "Heart"
+          ]
+        },
+        {
+          "word": "Triangle",
+          "emoji": "🔻",
+          "distractors": [
+            "Star",
+            "Circle",
+            "Diamond"
+          ]
+        },
+        {
+          "word": "Square",
+          "emoji": "🟥",
+          "distractors": [
+            "Triangle",
+            "Diamond",
+            "Circle"
+          ]
+        },
+        {
+          "word": "Square",
+          "emoji": "🟦",
+          "distractors": [
+            "Circle",
+            "Heart",
+            "Diamond"
+          ]
+        },
+        {
+          "word": "Circle",
+          "emoji": "🟣",
+          "distractors": [
+            "Star",
+            "Heart",
+            "Square"
+          ]
+        },
+        {
+          "word": "Circle",
+          "emoji": "🟡",
+          "distractors": [
+            "Triangle",
+            "Heart",
+            "Star"
+          ]
+        },
+        {
+          "word": "Diamond",
+          "emoji": "🔷",
+          "distractors": [
+            "Heart",
+            "Star",
+            "Square"
+          ]
+        },
+        {
+          "word": "Heart",
+          "emoji": "💙",
+          "distractors": [
+            "Diamond",
+            "Triangle",
+            "Star"
+          ]
+        },
+        {
+          "word": "Square",
+          "emoji": "🟨",
+          "distractors": [
+            "Circle",
+            "Triangle",
+            "Star"
+          ]
+        },
+        {
+          "word": "Heart",
+          "emoji": "❤️",
+          "distractors": [
+            "Diamond",
+            "Star",
+            "Triangle"
+          ]
+        },
+        {
+          "word": "Heart",
+          "emoji": "💜",
+          "distractors": [
+            "Diamond",
+            "Circle",
+            "Star"
+          ]
+        },
+        {
+          "word": "Triangle",
+          "emoji": "🔺",
+          "distractors": [
+            "Star",
+            "Diamond",
+            "Heart"
+          ]
+        },
+        {
+          "word": "Circle",
+          "emoji": "🔵",
+          "distractors": [
+            "Square",
+            "Triangle",
+            "Diamond"
+          ]
+        },
+        {
+          "word": "Circle",
+          "emoji": "🟢",
+          "distractors": [
+            "Star",
+            "Square",
+            "Diamond"
+          ]
+        },
+        {
+          "word": "Circle",
+          "emoji": "🟠",
+          "distractors": [
+            "Star",
+            "Square",
+            "Heart"
+          ]
+        }
+      ]
+    }
+  ]
+}

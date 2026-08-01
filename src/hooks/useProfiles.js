@@ -8,6 +8,7 @@ export const PROGRESS_FIELD = {
   spelling: 'spellingProgress',
   flags: 'flagProgress',
   countrySpelling: 'countrySpellingProgress',
+  counting: 'countingProgress',
 }
 
 function load() {

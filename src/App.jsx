@@ -8,6 +8,7 @@ import KidSelector from './components/KidSelector'
 import HomeScreen from './components/HomeScreen'
 import Quiz from './components/Quiz'
 import SpellingQuiz from './components/SpellingQuiz'
+import CountTapQuiz from './components/CountTapQuiz'
 import Results from './components/Results'
 import { hyphenate } from './utils/flags'
 
@@ -17,16 +18,22 @@ const MODE_BY_MENU_ID = {
   'spelling': 'spelling',
   'country-flags': 'flags',
   'country-spelling': 'countrySpelling',
+  'counting': 'counting',
 }
 
-// quiz mode -> which dataset it draws from, and which quiz component runs it
+// quiz mode -> which dataset it draws from
 const DATASET_BY_MODE = {
   pronounce: 'words',
   spelling: 'words',
   flags: 'countries',
   countrySpelling: 'countries',
+  counting: 'numbers',
 }
 const SPELLING_MODES = new Set(['spelling', 'countrySpelling'])
+
+function datasetFor(mode, datasets) {
+  return datasets[DATASET_BY_MODE[mode]]
+}
 
 // Screens worth resuming into after an accidental reload — picking a
 // section and being mid-quiz. The main menu, kid picker, and results are
@@ -65,6 +72,7 @@ export default function App() {
   const [mode, setMode] = useState('pronounce')
   const [words, setWords] = useState(null)
   const [countries, setCountries] = useState(null)
+  const [numbers, setNumbers] = useState(null)
   const [selectedMonth, setSelectedMonth] = useState(null)
   const [lastResult, setLastResult] = useState(null)
 
@@ -87,16 +95,20 @@ export default function App() {
       .then(r => r.json())
       .then(data => setCountries(transformCountries(data)))
       .catch(console.error)
+    fetch(`${import.meta.env.BASE_URL}numbers.json`)
+      .then(r => r.json())
+      .then(data => setNumbers(data))
+      .catch(console.error)
   }, [])
 
-  const dataset = DATASET_BY_MODE[mode] === 'countries' ? countries : words
+  const dataset = datasetFor(mode, { words, countries, numbers })
 
   // Resume onto the saved screen once the data + active kid it needs are ready
   useEffect(() => {
     if (!restoring) return
     const session = loadSession()
     if (!session || !profiles.activeKid) { setRestoring(false); return }
-    const ds = DATASET_BY_MODE[session.mode] === 'countries' ? countries : words
+    const ds = datasetFor(session.mode, { words, countries, numbers })
     if (!ds) return // wait for the dataset this session needs to finish loading
 
     if (session.screen === 'home') {
@@ -116,7 +128,7 @@ export default function App() {
       saveSession(null)
     }
     setRestoring(false)
-  }, [restoring, words, countries, profiles.activeKid])
+  }, [restoring, words, countries, numbers, profiles.activeKid])
 
   // Keep the saved session in sync so a reload can resume into it
   useEffect(() => {
@@ -184,7 +196,14 @@ export default function App() {
           />
         )}
         {screen === 'quiz' && selectedMonth && (
-          SPELLING_MODES.has(mode) ? (
+          mode === 'counting' && selectedMonth.problemType === 'tapcount' ? (
+            <CountTapQuiz
+              month={selectedMonth}
+              speech={speech}
+              onDone={handleQuizDone}
+              onBack={handleHome}
+            />
+          ) : SPELLING_MODES.has(mode) ? (
             <SpellingQuiz
               month={selectedMonth}
               mode={mode}

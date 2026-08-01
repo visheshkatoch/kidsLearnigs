@@ -8,6 +8,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import AccentPicker from './AccentPicker'
 import useStopwatch, { formatTime } from '../hooks/useStopwatch'
 import FlagIcon from './FlagIcon'
+import ObjectGroup from './ObjectGroup'
+import ObjectGroupPair from './ObjectGroupPair'
 
 const WORD_QUIZ_LENGTH = 10
 const AUTO_ADVANCE_MS = 2000
@@ -29,9 +31,13 @@ function pick(arr) {
 }
 
 export default function Quiz({ month, mode = 'pronounce', speech, onDone, onBack }) {
-  // In flag-matching mode the flag is the clue — speaking the country name
-  // up front would give the answer away before the kid even looks at it.
+  // In flag-matching and counting modes, the picture is the clue —
+  // speaking the answer up front would give it away before the kid even
+  // looks at it. Counting sections stay a graded, capped ladder like the
+  // English lessons though, so the uncapped/"X of Y correct" treatment
+  // below stays flags-only.
   const isFlagMode = mode === 'flags'
+  const isVisualClueMode = mode === 'flags' || mode === 'counting'
   // Countries & flags aren't a graded difficulty ladder like the English
   // lessons — run through every country in the region instead of a 10-cap.
   const quizLength = isFlagMode ? month.words.length : WORD_QUIZ_LENGTH
@@ -71,7 +77,7 @@ export default function Quiz({ month, mode = 'pronounce', speech, onDone, onBack
     setFeedback('')
     setShowPhonetic(false)
     setMascot(month.mascot)
-    if (isFlagMode) return
+    if (isVisualClueMode) return
     const timer = setTimeout(() => speech.speak(q.word), 500)
     return () => clearTimeout(timer)
   }, [current, q]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -93,8 +99,8 @@ export default function Quiz({ month, mode = 'pronounce', speech, onDone, onBack
       setFeedback(`The word was "${q.word}"`)
     }
 
-    if (isFlagMode) {
-      // Pronounce what the kid picked, then the correct country name
+    if (isVisualClueMode) {
+      // Pronounce what the kid picked, then the correct answer
       speech.speak(opt)
       if (opt !== q.word) {
         setTimeout(() => speech.speak(q.word, true), SPEAK_GAP_MS)
@@ -104,7 +110,7 @@ export default function Quiz({ month, mode = 'pronounce', speech, onDone, onBack
     } else {
       speech.speak(q.word, true)
     }
-  }, [answered, q, speech, isFlagMode])
+  }, [answered, q, speech, isVisualClueMode])
 
   const handleNext = useCallback(() => {
     if (current + 1 >= quizLength) {
@@ -209,18 +215,22 @@ export default function Quiz({ month, mode = 'pronounce', speech, onDone, onBack
           </Typography>
         </Box>
 
-        {/* Word/flag clue */}
+        {/* Word/flag/object clue */}
         <Box textAlign="center" mb={1}>
-          {q.code ? (
+          {q.groups ? (
+            <ObjectGroupPair groups={q.groups} operator={q.operator} />
+          ) : q.count != null ? (
+            <ObjectGroup emoji={q.emoji} count={q.count} crossedOut={q.crossedOut} />
+          ) : q.code ? (
             <FlagIcon code={q.code} size="5rem" />
           ) : (
             <Typography fontSize="2rem" lineHeight={1}>{q.emoji}</Typography>
           )}
         </Box>
 
-        {/* Listen button — in flag mode, held back until answered so the
-            flag stays the only clue */}
-        {(!isFlagMode || answered) && (
+        {/* Listen button — in flag/counting modes, held back until
+            answered so the picture stays the only clue */}
+        {(!isVisualClueMode || answered) && (
           <Box textAlign="center" mb={2.5}>
             <Button
               variant="contained"

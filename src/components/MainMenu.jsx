@@ -20,11 +20,11 @@ const MENU_ITEMS = [
     id: 'counting',
     title: 'Count & Learn',
     subtitle: 'Numbers & Maths',
-    description: 'Count objects, add and subtract — coming soon!',
+    description: '7 sections · Count, add, subtract, compare & shapes',
     icon: '🔢',
     color: '#FF6D00',
     gradient: 'linear-gradient(135deg, #FF6D00 0%, #FFD740 100%)',
-    available: false,
+    available: true,
   },
   {
     id: 'spelling',
