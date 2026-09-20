@@ -57,6 +57,16 @@ const MENU_ITEMS = [
     available: true,
   },
   {
+    id: 'critter-match',
+    title: 'Critter Match',
+    subtitle: 'Memory Game',
+    description: 'Flip two, find the pair — beat your best time!',
+    icon: '🐾',
+    color: '#6C4AB6',
+    gradient: 'linear-gradient(135deg, #6C4AB6 0%, #FF6F59 100%)',
+    available: true,
+  },
+  {
     id: 'stories',
     title: 'Story Time',
     subtitle: 'Short Stories',

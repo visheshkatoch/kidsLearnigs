@@ -9,6 +9,7 @@ import HomeScreen from './components/HomeScreen'
 import Quiz from './components/Quiz'
 import SpellingQuiz from './components/SpellingQuiz'
 import CountTapQuiz from './components/CountTapQuiz'
+import CritterMatch from './components/CritterMatch'
 import Results from './components/Results'
 import { hyphenate } from './utils/flags'
 
@@ -138,6 +139,10 @@ export default function App() {
 
   // When a menu item is selected, route into that section
   const handleMenuSelect = (id) => {
+    if (id === 'critter-match') {
+      setScreen('critter-match')
+      return
+    }
     const nextMode = MODE_BY_MENU_ID[id]
     if (!nextMode) return
     setMode(nextMode)
@@ -163,7 +168,7 @@ export default function App() {
   const handleMenu   = () => setScreen('menu')
   const handleSwitch = () => setScreen('kids')
 
-  if (restoring || (screen !== 'menu' && !dataset)) {
+  if (restoring || (screen !== 'menu' && screen !== 'critter-match' && !dataset)) {
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
@@ -183,6 +188,9 @@ export default function App() {
         )}
         {screen === 'kids' && (
           <KidSelector profiles={profiles} onSelect={handleSelectKid} onBack={handleMenu} />
+        )}
+        {screen === 'critter-match' && (
+          <CritterMatch onBack={handleMenu} />
         )}
         {screen === 'home' && profiles.activeKid && dataset && (
           <HomeScreen
