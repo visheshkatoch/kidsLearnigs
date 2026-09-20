@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sound Trail 🎵</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  h1 {
+    text-align: center;
+    color: white;
+    font-size: 2.2rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: rgba(255,255,255,0.85);
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+
+  /* ── MONTH STONES ── */
+  .trail {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .stone {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: white;
+    text-align: center;
+    line-height: 1.2;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  .stone:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+  .stone.active { transform: scale(1.15); border-color: white; border-width: 4px; }
+
+  .stone .month-num { font-size: 1.1rem; font-weight: 900; }
+
+  .stone .stars {
+    position: absolute;
+    bottom: -6px;
+    font-size: 0.6rem;
+    letter-spacing: -1px;
+  }
+
+  /* ── QUIZ CARD ── */
+  .card {
+    background: white;
+    border-radius: 24px;
+    padding: 28px 24px;
+    max-width: 540px;
+    margin: 0 auto;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+  }
+
+  .progress-bar-wrap {
+    background: #eee;
+    border-radius: 10px;
+    height: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.4s ease;
+    background: linear-gradient(90deg, #f7971e, #ffd200);
+  }
+
+  /* mascot */
+  .mascot {
+    font-size: 4rem;
+    text-align: center;
+    margin-bottom: 8px;
+    transition: transform 0.3s;
+    min-height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mascot.bounce { animation: bounce 0.5s ease; }
+  .mascot.shake  { animation: shake 0.4s ease; }
+
+  @keyframes bounce {
+    0%,100%{ transform: translateY(0); }
+    40%    { transform: translateY(-20px); }
+    70%    { transform: translateY(-10px); }
+  }
+  @keyframes shake {
+    0%,100%{ transform: translateX(0); }
+    20%    { transform: translateX(-8px); }
+    60%    { transform: translateX(8px); }
+  }
+
+  /* question area */
+  .question-area {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .listen-btn {
+    background: linear-gradient(135deg, #f7971e, #ffd200);
+    border: none;
+    border-radius: 50px;
+    padding: 14px 36px;
+    font-size: 1.4rem;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(247,151,30,0.4);
+    transition: transform 0.15s, box-shadow 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    color: #333;
+  }
+
+  .listen-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(247,151,30,0.5); }
+  .listen-btn:active { transform: scale(0.97); }
+
+  .listen-hint {
+    font-size: 0.85rem;
+    color: #aaa;
+    margin-top: 8px;
+  }
+
+  .phonetic-hint {
+    font-size: 1rem;
+    color: #888;
+    margin-top: 6px;
+    letter-spacing: 2px;
+    min-height: 1.4em;
+  }
+
+  /* answer grid */
+  .answers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .ans-btn {
+    background: #f0f4ff;
+    border: 3px solid #d0d8ff;
+    border-radius: 16px;
+    padding: 18px 10px;
+    font-size: 1.35rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: #333;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .ans-btn:hover:not(:disabled) {
+    background: #e0e8ff;
+    border-color: #6c8eff;
+    transform: scale(1.03);
+  }
+
+  .ans-btn.correct {
+    background: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+    animation: correct-pop 0.4s ease;
+  }
+
+  .ans-btn.wrong {
+    background: #f8d7da;
+    border-color: #dc3545;
+    color: #721c24;
+    animation: wrong-shake 0.3s ease;
+  }
+
+  .ans-btn.reveal {
+    background: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+  }
+
+  @keyframes correct-pop {
+    0%  { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100%{ transform: scale(1); }
+  }
+
+  @keyframes wrong-shake {
+    0%,100%{ transform: translateX(0); }
+    25%    { transform: translateX(-6px); }
+    75%    { transform: translateX(6px); }
+  }
+
+  /* feedback */
+  .feedback {
+    text-align: center;
+    font-size: 1.05rem;
+    font-weight: 700;
+    min-height: 1.5em;
+    margin-bottom: 8px;
+    color: #555;
+  }
+
+  .next-btn {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+    border: none;
+    border-radius: 16px;
+    padding: 16px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    cursor: pointer;
+    color: #1a6b4a;
+    transition: transform 0.15s, opacity 0.15s;
+    margin-top: 10px;
+  }
+
+  .next-btn:hover { transform: scale(1.02); }
+  .next-btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+
+  /* ── RESULTS SCREEN ── */
+  #results {
+    display: none;
+    text-align: center;
+  }
+
+  .result-stars {
+    font-size: 3rem;
+    letter-spacing: 4px;
+    margin: 16px 0;
+  }
+
+  .result-msg {
+    font-size: 1.3rem;
+    color: #444;
+    margin-bottom: 12px;
+  }
+
+  .score-big {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #764ba2;
+    margin: 8px 0;
+  }
+
+  .result-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  .btn-secondary {
+    background: #f0f4ff;
+    border: 2px solid #d0d8ff;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    color: #555;
+    transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: #e0e8ff; }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    color: white;
+    transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.9; }
+
+  /* ── START SCREEN ── */
+  #start-screen {
+    text-align: center;
+    padding: 10px 0;
+  }
+
+  #start-screen p {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  .month-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .month-card {
+    border-radius: 14px;
+    padding: 12px;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: transform 0.15s, border-color 0.15s;
+    text-align: left;
+  }
+
+  .month-card:hover { transform: scale(1.03); border-color: rgba(255,255,255,0.5); }
+
+  .month-card .mc-title {
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  }
+
+  .month-card .mc-theme {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.85);
+    margin-top: 2px;
+  }
+
+  .month-card .mc-stars {
+    font-size: 0.8rem;
+    margin-top: 4px;
+  }
+
+  /* ── HEADER ── */
+  .quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    color: #888;
+  }
+
+  .quiz-header .month-badge {
+    font-weight: 700;
+    color: #555;
+    font-size: 0.95rem;
+  }
+
+  .q-counter { color: #999; }
+
+  /* confetti */
+  .confetti-wrap {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 999;
+  }
+
+  .confetti-piece {
+    position: absolute;
+    width: 10px; height: 10px;
+    border-radius: 2px;
+    top: -20px;
+    animation: fall linear forwards;
+  }
+
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* responsive */
+  @media (max-width: 400px) {
+    h1 { font-size: 1.7rem; }
+    .stone { width: 58px; height: 58px; font-size: 0.55rem; }
+    .ans-btn { font-size: 1.1rem; padding: 14px 8px; }
+    .listen-btn { font-size: 1.2rem; padding: 12px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>🎵 Sound Trail</h1>
+<p class="subtitle">Listen · Pick the word · Earn stars!</p>
+
+<!-- Month stepping stones -->
+<div class="trail" id="trail"></div>
+
+<div class="card">
+
+  <!-- START SCREEN -->
+  <div id="start-screen">
+    <p>Pick a month below and practice your words!<br>Listen carefully and tap the right word. 🌟</p>
+    <div class="month-grid" id="month-grid"></div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quiz-screen" style="display:none">
+    <div class="quiz-header">
+      <span class="month-badge" id="qh-month"></span>
+      <span class="q-counter" id="qh-counter"></span>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+    </div>
+
+    <div class="mascot" id="mascot">🦁</div>
+
+    <div class="question-area">
+      <button class="listen-btn" id="listen-btn" onclick="speakWord()">
+        🔊 Hear the Word
+      </button>
+      <p class="listen-hint">Tap to hear the word again</p>
+      <p class="phonetic-hint" id="phonetic-hint"></p>
+    </div>
+
+    <div class="answers" id="answers"></div>
+    <div class="feedback" id="feedback"></div>
+
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()" disabled>
+      Next Word →
+    </button>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="results">
+    <div style="font-size:3rem" id="result-emoji">🎉</div>
+    <div class="score-big" id="score-text"></div>
+    <div class="result-stars" id="result-stars"></div>
+    <div class="result-msg" id="result-msg"></div>
+    <div class="result-actions">
+      <button class="btn-secondary" onclick="retryMonth()">🔄 Try Again</button>
+      <button class="btn-primary" onclick="showStart()">🗺️ All Months</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="confetti-wrap" id="confetti-wrap"></div>
+
+<script>
+// ────────────────────────────────────────────
+// WORD DATA  (300 words, 10 months × 30)
+// ────────────────────────────────────────────
+const MONTHS = [
+  {
+    num: 1, title: "Month 1", theme: "Animals & Family", stage: "Beginner",
+    color: "#FF6B6B", mascot: "🦁",
+    words: [
+      {w:"cat",ph:"c-a-t",e:"🐱"},{w:"dog",ph:"d-o-g",e:"🐶"},{w:"hat",ph:"h-a-t",e:"🎩"},
+      {w:"bat",ph:"b-a-t",e:"🦇"},{w:"mat",ph:"m-a-t",e:"🟫"},{w:"can",ph:"c-a-n",e:"🥫"},
+      {w:"man",ph:"m-a-n",e:"👨"},{w:"fan",ph:"f-a-n",e:"💨"},{w:"big",ph:"b-i-g",e:"🐘"},
+      {w:"pig",ph:"p-i-g",e:"🐷"},{w:"dig",ph:"d-i-g",e:"⛏️"},{w:"hot",ph:"h-o-t",e:"🌡️"},
+      {w:"pot",ph:"p-o-t",e:"🍯"},{w:"dot",ph:"d-o-t",e:"🟠"},{w:"red",ph:"r-e-d",e:"🔴"},
+      {w:"bed",ph:"b-e-d",e:"🛏️"},{w:"hen",ph:"h-e-n",e:"🐔"},{w:"ten",ph:"t-e-n",e:"🔟"},
+      {w:"cup",ph:"c-u-p",e:"☕"},{w:"pup",ph:"p-u-p",e:"🐶"},{w:"bug",ph:"b-u-g",e:"🐛"},
+      {w:"jug",ph:"j-u-g",e:"🫙"},{w:"mug",ph:"m-u-g",e:"🍵"},{w:"bun",ph:"b-u-n",e:"🍞"},
+      {w:"run",ph:"r-u-n",e:"🏃"},{w:"fun",ph:"f-u-n",e:"🎉"},{w:"nut",ph:"n-u-t",e:"🥜"},
+      {w:"cut",ph:"c-u-t",e:"✂️"},{w:"hut",ph:"h-u-t",e:"🛖"},{w:"sun",ph:"s-u-n",e:"☀️"}
+    ]
+  },
+  {
+    num: 2, title: "Month 2", theme: "Food & Colors", stage: "Beginner+",
+    color: "#FFA94D", mascot: "🦊",
+    words: [
+      {w:"jam",ph:"j-a-m",e:"🍓"},{w:"ham",ph:"h-a-m",e:"🥓"},{w:"yam",ph:"y-a-m",e:"🍠"},
+      {w:"dip",ph:"d-i-p",e:"🫕"},{w:"lip",ph:"l-i-p",e:"👄"},{w:"tip",ph:"t-i-p",e:"💡"},
+      {w:"mix",ph:"m-i-x",e:"🥣"},{w:"fix",ph:"f-i-x",e:"🔧"},{w:"six",ph:"s-i-x",e:"6️⃣"},
+      {w:"top",ph:"t-o-p",e:"🔝"},{w:"hop",ph:"h-o-p",e:"🐇"},{w:"mop",ph:"m-o-p",e:"🧹"},
+      {w:"wet",ph:"w-e-t",e:"💧"},{w:"jet",ph:"j-e-t",e:"✈️"},{w:"net",ph:"n-e-t",e:"🕸️"},
+      {w:"pet",ph:"p-e-t",e:"🐾"},{w:"set",ph:"s-e-t",e:"📦"},{w:"yes",ph:"y-e-s",e:"✅"},
+      {w:"box",ph:"b-o-x",e:"📦"},{w:"fox",ph:"f-o-x",e:"🦊"},{w:"zip",ph:"z-i-p",e:"🤐"},
+      {w:"sip",ph:"s-i-p",e:"🥤"},{w:"rip",ph:"r-i-p",e:"😢"},{w:"ship",ph:"sh-i-p",e:"🚢"},
+      {w:"chip",ph:"ch-i-p",e:"🍟"},{w:"chin",ph:"ch-i-n",e:"😊"},{w:"thin",ph:"th-i-n",e:"📏"},
+      {w:"shop",ph:"sh-o-p",e:"🛒"},{w:"chop",ph:"ch-o-p",e:"🔪"},{w:"then",ph:"th-e-n",e:"➡️"}
+    ]
+  },
+  {
+    num: 3, title: "Month 3", theme: "Nature & Outdoors", stage: "Easy",
+    color: "#69DB7C", mascot: "🐸",
+    words: [
+      {w:"clap",ph:"cl-a-p",e:"👏"},{w:"flat",ph:"fl-a-t",e:"🏳️"},{w:"plan",ph:"pl-a-n",e:"📋"},
+      {w:"glad",ph:"gl-a-d",e:"😄"},{w:"frog",ph:"fr-o-g",e:"🐸"},{w:"drop",ph:"dr-o-p",e:"💧"},
+      {w:"step",ph:"st-e-p",e:"👣"},{w:"spin",ph:"sp-i-n",e:"🌀"},{w:"skip",ph:"sk-i-p",e:"🏃"},
+      {w:"slug",ph:"sl-u-g",e:"🐌"},{w:"trip",ph:"tr-i-p",e:"🧳"},{w:"trim",ph:"tr-i-m",e:"✂️"},
+      {w:"grip",ph:"gr-i-p",e:"✊"},{w:"grin",ph:"gr-i-n",e:"😁"},{w:"flip",ph:"fl-i-p",e:"🔄"},
+      {w:"flag",ph:"fl-a-g",e:"🚩"},{w:"snap",ph:"sn-a-p",e:"🫰"},{w:"sled",ph:"sl-e-d",e:"🛷"},
+      {w:"drip",ph:"dr-i-p",e:"💧"},{w:"crab",ph:"cr-a-b",e:"🦀"},{w:"grab",ph:"gr-a-b",e:"🤲"},
+      {w:"drag",ph:"dr-a-g",e:"🐉"},{w:"slap",ph:"sl-a-p",e:"🖐️"},{w:"plug",ph:"pl-u-g",e:"🔌"},
+      {w:"club",ph:"cl-u-b",e:"🏌️"},{w:"stun",ph:"st-u-n",e:"😲"},{w:"stem",ph:"st-e-m",e:"🌱"},
+      {w:"crop",ph:"cr-o-p",e:"🌾"},{w:"brim",ph:"br-i-m",e:"🎩"},{w:"clam",ph:"cl-a-m",e:"🦪"}
+    ]
+  },
+  {
+    num: 4, title: "Month 4", theme: "Toys & Games", stage: "Easy+",
+    color: "#4DABF7", mascot: "🎮",
+    words: [
+      {w:"cake",ph:"c-ai-k",e:"🎂"},{w:"lake",ph:"l-ai-k",e:"🏞️"},{w:"make",ph:"m-ai-k",e:"🎨"},
+      {w:"take",ph:"t-ai-k",e:"🤲"},{w:"wake",ph:"w-ai-k",e:"⏰"},{w:"bike",ph:"b-eye-k",e:"🚲"},
+      {w:"like",ph:"l-eye-k",e:"❤️"},{w:"hike",ph:"h-eye-k",e:"🥾"},{w:"hide",ph:"h-eye-d",e:"🙈"},
+      {w:"ride",ph:"r-eye-d",e:"🎠"},{w:"side",ph:"s-eye-d",e:"↔️"},{w:"wide",ph:"w-eye-d",e:"↔️"},
+      {w:"home",ph:"h-oh-m",e:"🏠"},{w:"bone",ph:"b-oh-n",e:"🦴"},{w:"cone",ph:"c-oh-n",e:"🍦"},
+      {w:"note",ph:"n-oh-t",e:"📝"},{w:"vote",ph:"v-oh-t",e:"🗳️"},{w:"rope",ph:"r-oh-p",e:"🪢"},
+      {w:"hope",ph:"h-oh-p",e:"🌟"},{w:"cute",ph:"c-yoo-t",e:"😍"},{w:"tube",ph:"t-yoo-b",e:"🧴"},
+      {w:"cube",ph:"c-yoo-b",e:"🎲"},{w:"dune",ph:"d-yoo-n",e:"🏜️"},{w:"tune",ph:"t-yoo-n",e:"🎵"},
+      {w:"fine",ph:"f-eye-n",e:"😌"},{w:"mine",ph:"m-eye-n",e:"⛏️"},{w:"vine",ph:"v-eye-n",e:"🌿"},
+      {w:"pine",ph:"p-eye-n",e:"🌲"},{w:"rose",ph:"r-oh-z",e:"🌹"},{w:"nose",ph:"n-oh-z",e:"👃"}
+    ]
+  },
+  {
+    num: 5, title: "Month 5", theme: "Weather & Seasons", stage: "Medium",
+    color: "#74C0FC", mascot: "🌤️",
+    words: [
+      {w:"rain",ph:"r-ai-n",e:"🌧️"},{w:"wait",ph:"w-ai-t",e:"⏳"},{w:"mail",ph:"m-ai-l",e:"📬"},
+      {w:"sail",ph:"s-ai-l",e:"⛵"},{w:"tail",ph:"t-ai-l",e:"🦊"},{w:"bead",ph:"b-ee-d",e:"📿"},
+      {w:"read",ph:"r-ee-d",e:"📖"},{w:"seal",ph:"s-ee-l",e:"🦭"},{w:"meal",ph:"m-ee-l",e:"🍽️"},
+      {w:"deal",ph:"d-ee-l",e:"🤝"},{w:"coat",ph:"c-oh-t",e:"🧥"},{w:"road",ph:"r-oh-d",e:"🛣️"},
+      {w:"soap",ph:"s-oh-p",e:"🧼"},{w:"load",ph:"l-oh-d",e:"📦"},{w:"toad",ph:"t-oh-d",e:"🐸"},
+      {w:"moon",ph:"m-oo-n",e:"🌙"},{w:"soon",ph:"s-oo-n",e:"⏰"},{w:"food",ph:"f-oo-d",e:"🍕"},
+      {w:"cool",ph:"c-oo-l",e:"😎"},{w:"pool",ph:"p-oo-l",e:"🏊"},{w:"book",ph:"b-oo-k",e:"📚"},
+      {w:"look",ph:"l-oo-k",e:"👀"},{w:"cook",ph:"c-oo-k",e:"👨‍🍳"},{w:"hook",ph:"h-oo-k",e:"🪝"},
+      {w:"wood",ph:"w-oo-d",e:"🪵"},{w:"feet",ph:"f-ee-t",e:"🦶"},{w:"keep",ph:"k-ee-p",e:"🤲"},
+      {w:"seed",ph:"s-ee-d",e:"🌱"},{w:"weed",ph:"w-ee-d",e:"🌿"},{w:"tree",ph:"tr-ee",e:"🌳"}
+    ]
+  },
+  {
+    num: 6, title: "Month 6", theme: "School & People", stage: "Medium",
+    color: "#E599F7", mascot: "🧑‍🏫",
+    words: [
+      {w:"said",ph:"s-ed",e:"💬"},{w:"have",ph:"h-av",e:"🤲"},{w:"come",ph:"c-um",e:"🚶"},
+      {w:"some",ph:"s-um",e:"🍪"},{w:"love",ph:"l-uv",e:"❤️"},{w:"give",ph:"g-iv",e:"🎁"},
+      {w:"were",ph:"w-er",e:"🕰️"},{w:"want",ph:"w-ont",e:"🙋"},{w:"what",ph:"wh-ot",e:"❓"},
+      {w:"when",ph:"wh-en",e:"🕐"},{w:"where",ph:"wh-air",e:"📍"},{w:"who",ph:"h-oo",e:"🦉"},
+      {w:"once",ph:"w-unce",e:"1️⃣"},{w:"does",ph:"d-uz",e:"📋"},{w:"done",ph:"d-un",e:"✅"},
+      {w:"from",ph:"fr-um",e:"📨"},{w:"they",ph:"th-ay",e:"👥"},{w:"there",ph:"th-air",e:"📍"},
+      {w:"here",ph:"h-eer",e:"👇"},{w:"more",ph:"m-or",e:"➕"},{w:"your",ph:"y-or",e:"🫵"},
+      {w:"about",ph:"a-bout",e:"ℹ️"},{w:"into",ph:"in-too",e:"➡️"},{w:"after",ph:"af-ter",e:"⏭️"},
+      {w:"every",ph:"ev-ree",e:"🔁"},{w:"other",ph:"u-ther",e:"🔀"},{w:"could",ph:"c-ood",e:"💭"},
+      {w:"would",ph:"w-ood",e:"💭"},{w:"should",ph:"sh-ood",e:"💭"},{w:"their",ph:"th-air",e:"👥"}
+    ]
+  },
+  {
+    num: 7, title: "Month 7", theme: "Feelings & Fun", stage: "Medium+",
+    color: "#FF8CC8", mascot: "😄",
+    words: [
+      {w:"happy",ph:"hap-py",e:"😄"},{w:"funny",ph:"fun-ny",e:"😂"},{w:"puppy",ph:"pup-py",e:"🐶"},
+      {w:"bunny",ph:"bun-ny",e:"🐰"},{w:"kitty",ph:"kit-ty",e:"🐱"},{w:"daisy",ph:"dai-sy",e:"🌼"},
+      {w:"baby",ph:"ba-by",e:"👶"},{w:"pony",ph:"po-ny",e:"🐴"},{w:"muddy",ph:"mud-dy",e:"💩"},
+      {w:"sunny",ph:"sun-ny",e:"☀️"},{w:"rainy",ph:"rain-y",e:"🌧️"},{w:"windy",ph:"wind-y",e:"💨"},
+      {w:"daddy",ph:"dad-dy",e:"👨"},{w:"mommy",ph:"mom-my",e:"👩"},{w:"teddy",ph:"ted-dy",e:"🧸"},
+      {w:"candy",ph:"can-dy",e:"🍬"},{w:"party",ph:"par-ty",e:"🎉"},{w:"story",ph:"sto-ry",e:"📖"},
+      {w:"sorry",ph:"sor-ry",e:"😔"},{w:"hurry",ph:"hur-ry",e:"🏃"},{w:"carry",ph:"car-ry",e:"🤲"},
+      {w:"berry",ph:"ber-ry",e:"🍓"},{w:"jolly",ph:"jol-ly",e:"🎅"},{w:"silly",ph:"sil-ly",e:"🤪"},
+      {w:"lucky",ph:"luck-y",e:"🍀"},{w:"rocky",ph:"rock-y",e:"🪨"},{w:"sandy",ph:"sand-y",e:"🏖️"},
+      {w:"misty",ph:"mist-y",e:"🌫️"},{w:"dusty",ph:"dust-y",e:"🌪️"},{w:"witty",ph:"wit-ty",e:"💡"}
+    ]
+  },
+  {
+    num: 8, title: "Month 8", theme: "Around the House", stage: "Hard",
+    color: "#A9E34B", mascot: "🐢",
+    words: [
+      {w:"apple",ph:"ap-ple",e:"🍎"},{w:"table",ph:"ta-ble",e:"🪑"},{w:"little",ph:"lit-tle",e:"🤏"},
+      {w:"bottle",ph:"bot-tle",e:"🍶"},{w:"rattle",ph:"rat-tle",e:"🎶"},{w:"kettle",ph:"ket-tle",e:"🫖"},
+      {w:"turtle",ph:"tur-tle",e:"🐢"},{w:"pickle",ph:"pic-kle",e:"🥒"},{w:"tickle",ph:"tic-kle",e:"😂"},
+      {w:"middle",ph:"mid-dle",e:"↔️"},{w:"riddle",ph:"rid-dle",e:"🤔"},{w:"noodle",ph:"noo-dle",e:"🍜"},
+      {w:"needle",ph:"nee-dle",e:"🧵"},{w:"eagle",ph:"ea-gle",e:"🦅"},{w:"jungle",ph:"jun-gle",e:"🌴"},
+      {w:"simple",ph:"sim-ple",e:"✅"},{w:"dimple",ph:"dim-ple",e:"😊"},{w:"temple",ph:"tem-ple",e:"🛕"},
+      {w:"tumble",ph:"tum-ble",e:"🤸"},{w:"humble",ph:"hum-ble",e:"🙏"},{w:"bumble",ph:"bum-ble",e:"🐝"},
+      {w:"mumble",ph:"mum-ble",e:"🗣️"},{w:"candle",ph:"can-dle",e:"🕯️"},{w:"handle",ph:"han-dle",e:"🚪"},
+      {w:"bundle",ph:"bun-dle",e:"📦"},{w:"gentle",ph:"gen-tle",e:"🤗"},{w:"purple",ph:"pur-ple",e:"💜"},
+      {w:"circle",ph:"cir-cle",e:"⭕"},{w:"wiggle",ph:"wig-gle",e:"🐛"},{w:"giggle",ph:"gig-gle",e:"😆"}
+    ]
+  },
+  {
+    num: 9, title: "Month 9", theme: "School & Learning", stage: "Hard+",
+    color: "#FFA94D", mascot: "🚀",
+    words: [
+      {w:"seven",ph:"sev-en",e:"7️⃣"},{w:"garden",ph:"gar-den",e:"🌷"},{w:"basket",ph:"bas-ket",e:"🧺"},
+      {w:"blanket",ph:"blan-ket",e:"🛌"},{w:"carpet",ph:"car-pet",e:"🏠"},{w:"market",ph:"mar-ket",e:"🛒"},
+      {w:"parrot",ph:"par-rot",e:"🦜"},{w:"carrot",ph:"car-rot",e:"🥕"},{w:"rabbit",ph:"rab-bit",e:"🐰"},
+      {w:"planet",ph:"plan-et",e:"🌍"},{w:"rocket",ph:"rock-et",e:"🚀"},{w:"jacket",ph:"jack-et",e:"🧥"},
+      {w:"pocket",ph:"pock-et",e:"👖"},{w:"ticket",ph:"tick-et",e:"🎟️"},{w:"cricket",ph:"crick-et",e:"🏏"},
+      {w:"trumpet",ph:"trum-pet",e:"🎺"},{w:"biscuit",ph:"bis-cuit",e:"🍪"},{w:"blossom",ph:"blos-som",e:"🌸"},
+      {w:"button",ph:"but-ton",e:"🔘"},{w:"cotton",ph:"cot-ton",e:"🧶"},{w:"kitten",ph:"kit-ten",e:"🐱"},
+      {w:"mitten",ph:"mit-ten",e:"🧤"},{w:"ribbon",ph:"rib-bon",e:"🎀"},{w:"lemon",ph:"lem-on",e:"🍋"},
+      {w:"melon",ph:"mel-on",e:"🍈"},{w:"cabin",ph:"cab-in",e:"🛖"},{w:"muffin",ph:"muf-fin",e:"🧁"},
+      {w:"napkin",ph:"nap-kin",e:"🍽️"},{w:"captain",ph:"cap-tain",e:"⚓"},{w:"lantern",ph:"lan-tern",e:"🏮"}
+    ]
+  },
+  {
+    num: 10, title: "Month 10", theme: "Big Kid Words!", stage: "Expert",
+    color: "#F03E3E", mascot: "🌟",
+    words: [
+      {w:"umbrella",ph:"um-brel-la",e:"☂️"},{w:"elephant",ph:"el-e-phant",e:"🐘"},{w:"butterfly",ph:"but-ter-fly",e:"🦋"},
+      {w:"adventure",ph:"ad-ven-ture",e:"🗺️"},{w:"beautiful",ph:"beau-ti-ful",e:"😍"},{w:"important",ph:"im-por-tant",e:"❗"},
+      {w:"together",ph:"to-geth-er",e:"🤝"},{w:"understand",ph:"un-der-stand",e:"💡"},{w:"everyone",ph:"ev-ery-one",e:"👥"},
+      {w:"something",ph:"some-thing",e:"🤔"},{w:"another",ph:"an-oth-er",e:"➕"},{w:"between",ph:"be-tween",e:"↔️"},
+      {w:"children",ph:"chil-dren",e:"👧"},{w:"holiday",ph:"hol-i-day",e:"🏖️"},{w:"morning",ph:"morn-ing",e:"🌅"},
+      {w:"evening",ph:"eve-ning",e:"🌆"},{w:"birthday",ph:"birth-day",e:"🎂"},{w:"rainbow",ph:"rain-bow",e:"🌈"},
+      {w:"sunshine",ph:"sun-shine",e:"🌞"},{w:"thunder",ph:"thun-der",e:"⛈️"},{w:"winter",ph:"win-ter",e:"❄️"},
+      {w:"summer",ph:"sum-mer",e:"☀️"},{w:"autumn",ph:"au-tumn",e:"🍂"},{w:"breakfast",ph:"break-fast",e:"🍳"},
+      {w:"telephone",ph:"tel-e-phone",e:"📞"},{w:"computer",ph:"com-pu-ter",e:"💻"},{w:"favourite",ph:"fav-our-ite",e:"⭐"},
+      {w:"wonderful",ph:"won-der-ful",e:"🌟"},{w:"remember",ph:"re-mem-ber",e:"🧠"},{w:"tomorrow",ph:"to-mor-row",e:"📅"}
+    ]
+  }
+];
+
+// ────────────────────────────────────────────
+// STATE
+// ────────────────────────────────────────────
+let currentMonth = null;
+let quizWords = [];
+let currentQ = 0;
+let score = 0;
+let answered = false;
+let currentWord = null;
+
+const QUIZ_LENGTH = 10;
+
+// ────────────────────────────────────────────
+// PROGRESS  (localStorage)
+// ────────────────────────────────────────────
+function getProgress() {
+  try { return JSON.parse(localStorage.getItem('soundTrail') || '{}'); }
+  catch { return {}; }
+}
+function saveProgress(month, stars) {
+  const p = getProgress();
+  if (!p[month] || p[month] < stars) p[month] = stars;
+  localStorage.setItem('soundTrail', JSON.stringify(p));
+}
+function getStars(month) {
+  return getProgress()[month] || 0;
+}
+function starStr(n) {
+  return '⭐'.repeat(n) + '☆'.repeat(3 - n);
+}
+
+// ────────────────────────────────────────────
+// SPEECH
+// ────────────────────────────────────────────
+function speak(text, slow = false) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = slow ? 0.6 : 0.85;
+  u.pitch = 1.1;
+  u.lang = 'en-US';
+  window.speechSynthesis.speak(u);
+}
+
+function speakWord() {
+  if (currentWord) speak(currentWord.w);
+  const btn = document.getElementById('listen-btn');
+  btn.style.transform = 'scale(0.95)';
+  setTimeout(() => btn.style.transform = '', 200);
+}
+
+// ────────────────────────────────────────────
+// UI BUILDERS
+// ────────────────────────────────────────────
+function buildTrail() {
+  const trail = document.getElementById('trail');
+  trail.innerHTML = '';
+  const prog = getProgress();
+  MONTHS.forEach(m => {
+    const s = document.createElement('div');
+    s.className = 'stone';
+    s.style.background = m.color;
+    const stars = prog[m.num] || 0;
+    s.innerHTML = `<span class="month-num">${m.num}</span><span style="font-size:0.6rem">${m.theme.split(' ')[0]}</span>` +
+      (stars ? `<span class="stars">${'⭐'.repeat(stars)}</span>` : '');
+    s.onclick = () => startMonth(m.num);
+    trail.appendChild(s);
+  });
+}
+
+function buildMonthGrid() {
+  const grid = document.getElementById('month-grid');
+  grid.innerHTML = '';
+  MONTHS.forEach(m => {
+    const c = document.createElement('div');
+    c.className = 'month-card';
+    c.style.background = m.color;
+    const stars = getStars(m.num);
+    c.innerHTML = `<div class="mc-title">${m.mascot} ${m.title}</div>
+      <div class="mc-theme">${m.theme} · ${m.stage}</div>
+      <div class="mc-stars">${starStr(stars)}</div>`;
+    c.onclick = () => startMonth(m.num);
+    grid.appendChild(c);
+  });
+}
+
+function showStart() {
+  document.getElementById('start-screen').style.display = '';
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('results').style.display = 'none';
+  buildTrail();
+  buildMonthGrid();
+}
+
+// ────────────────────────────────────────────
+// QUIZ LOGIC
+// ────────────────────────────────────────────
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function startMonth(n) {
+  currentMonth = MONTHS.find(m => m.num === n);
+  quizWords = shuffle([...currentMonth.words]).slice(0, QUIZ_LENGTH);
+  currentQ = 0;
+  score = 0;
+
+  // update trail active
+  document.querySelectorAll('.stone').forEach((s, i) => {
+    s.classList.toggle('active', MONTHS[i].num === n);
+  });
+
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = '';
+
+  document.getElementById('qh-month').textContent = `${currentMonth.mascot} ${currentMonth.title}: ${currentMonth.theme}`;
+
+  loadQuestion();
+}
+
+function loadQuestion() {
+  answered = false;
+  currentWord = quizWords[currentQ];
+
+  // header counter
+  document.getElementById('qh-counter').textContent = `${currentQ + 1} / ${QUIZ_LENGTH}`;
+
+  // progress bar
+  document.getElementById('progress-bar').style.width = `${(currentQ / QUIZ_LENGTH) * 100}%`;
+
+  // mascot
+  const mascot = document.getElementById('mascot');
+  mascot.textContent = currentMonth.mascot;
+  mascot.className = 'mascot';
+
+  // reset feedback
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('phonetic-hint').textContent = '';
+
+  // next btn
+  document.getElementById('next-btn').disabled = true;
+
+  // build 4 options: correct + 3 distractors from same/nearby months
+  const options = getOptions(currentWord, currentMonth);
+  const ansDiv = document.getElementById('answers');
+  ansDiv.innerHTML = '';
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'ans-btn';
+    btn.textContent = `${opt.e}  ${opt.w}`;
+    btn.onclick = () => checkAnswer(opt, btn, options);
+    ansDiv.appendChild(btn);
+  });
+
+  // auto-speak after short delay
+  setTimeout(() => speak(currentWord.w), 400);
+}
+
+function getOptions(correct, month) {
+  // gather distractor pool from same month
+  let pool = month.words.filter(w => w.w !== correct.w);
+  // if month has nearby months, add some for variety
+  const nearIdx = MONTHS.indexOf(month);
+  if (nearIdx > 0) pool = pool.concat(MONTHS[nearIdx - 1].words.filter(w => w.w !== correct.w));
+  if (nearIdx < MONTHS.length - 1) pool = pool.concat(MONTHS[nearIdx + 1].words.filter(w => w.w !== correct.w));
+
+  shuffle(pool);
+  const distractors = pool.slice(0, 3);
+  return shuffle([correct, ...distractors]);
+}
+
+function checkAnswer(opt, btn, allOptions) {
+  if (answered) return;
+  answered = true;
+
+  const correct = opt.w === currentWord.w;
+  const mascot = document.getElementById('mascot');
+  const feedback = document.getElementById('feedback');
+
+  // disable all buttons
+  document.querySelectorAll('.ans-btn').forEach(b => b.disabled = true);
+
+  if (correct) {
+    score++;
+    btn.classList.add('correct');
+    mascot.textContent = '🥳';
+    mascot.className = 'mascot bounce';
+    feedback.textContent = `✅ Amazing! "${currentWord.w}" — ${currentWord.ph}`;
+    feedback.style.color = '#28a745';
+    document.getElementById('phonetic-hint').textContent = currentWord.ph;
+    speak('Excellent!');
+  } else {
+    btn.classList.add('wrong');
+    // reveal correct
+    document.querySelectorAll('.ans-btn').forEach(b => {
+      if (b.textContent.includes(currentWord.w)) b.classList.add('reveal');
+    });
+    mascot.textContent = '😅';
+    mascot.className = 'mascot shake';
+    feedback.textContent = `The word was "${currentWord.w}" — ${currentWord.ph}`;
+    feedback.style.color = '#dc3545';
+    document.getElementById('phonetic-hint').textContent = currentWord.ph;
+    speak(currentWord.w, true);
+  }
+
+  document.getElementById('next-btn').disabled = false;
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= QUIZ_LENGTH) {
+    showResults();
+  } else {
+    loadQuestion();
+  }
+}
+
+function retryMonth() {
+  startMonth(currentMonth.num);
+}
+
+// ────────────────────────────────────────────
+// RESULTS
+// ────────────────────────────────────────────
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('results').style.display = '';
+
+  document.getElementById('progress-bar').style.width = '100%';
+
+  const pct = score / QUIZ_LENGTH;
+  let stars = pct >= 0.9 ? 3 : pct >= 0.6 ? 2 : pct >= 0.3 ? 1 : 0;
+
+  saveProgress(currentMonth.num, stars);
+  buildTrail();
+
+  document.getElementById('score-text').textContent = `${score} / ${QUIZ_LENGTH}`;
+  document.getElementById('result-stars').textContent = starStr(stars);
+
+  let emoji, msg;
+  if (stars === 3) {
+    emoji = '🏆'; msg = 'Superstar! You nailed it! 🎉';
+    launchConfetti();
+    speak('Wonderful! You are a superstar!');
+  } else if (stars === 2) {
+    emoji = '🌟'; msg = 'Great job! Keep practising!';
+    speak('Great job! Keep practising!');
+  } else if (stars === 1) {
+    emoji = '💪'; msg = 'Good try! Listen again and retry!';
+    speak('Good try! Keep going!');
+  } else {
+    emoji = '🐣'; msg = 'Let\'s try again — you\'ve got this!';
+    speak('Let us try again!');
+  }
+
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-msg').textContent = msg;
+}
+
+// ────────────────────────────────────────────
+// CONFETTI
+// ────────────────────────────────────────────
+function launchConfetti() {
+  const wrap = document.getElementById('confetti-wrap');
+  wrap.innerHTML = '';
+  const colors = ['#FF6B6B','#FFA94D','#FFD43B','#69DB7C','#4DABF7','#E599F7','#FF8CC8'];
+  for (let i = 0; i < 60; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.cssText = `
+      left: ${Math.random() * 100}%;
+      background: ${colors[Math.floor(Math.random() * colors.length)]};
+      animation-duration: ${1.5 + Math.random() * 2}s;
+      animation-delay: ${Math.random() * 0.8}s;
+      width: ${6 + Math.random() * 10}px;
+      height: ${6 + Math.random() * 10}px;
+      border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+    `;
+    wrap.appendChild(p);
+  }
+  setTimeout(() => wrap.innerHTML = '', 4000);
+}
+
+// ────────────────────────────────────────────
+// INIT
+// ────────────────────────────────────────────
+showStart();
+</script>
+</body>
+</html>
